@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="description" content="Thrive Skill Tech - Admin Panel"/>
+<meta name="robots" content="noindex, nofollow"/>
+<title>Admin Panel - Thrive Skill Tech</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'"/>
+<noscript><link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/></noscript>
+<style>
+:root{--black:#0a0a0a;--black2:#111;--dark:#1a1a1a;--green:#22c55e;--green-l:#86efac;--yellow:#facc15;--white:#f5f5f0;--gray:#c2c2c2;--gray2:#525252;--red:#ef4444;--blue:#3b82f6;--orange:#f97316;--bdr:rgba(250,204,21,0.15);}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--black);color:var(--white);font-family:'Syne',system-ui,sans-serif;min-height:100vh;}
+@keyframes spin{to{transform:rotate(360deg);}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+
+/* LOADER */
+#appLoader{position:fixed;inset:0;background:var(--black);display:flex;align-items:center;justify-content:center;z-index:9000;flex-direction:column;gap:1.2rem;}
+.loader-brand{font-family:'Bebas Neue',Impact,sans-serif;font-size:2rem;color:var(--yellow);letter-spacing:0.08em;}
+.spinner{width:38px;height:38px;border:3px solid rgba(250,204,21,0.15);border-top-color:var(--yellow);border-radius:50%;animation:spin 0.8s linear infinite;}
+
+/* LAYOUT */
+.admin-layout{display:flex;min-height:100vh;}
+.admin-sidebar{width:220px;background:var(--black2);border-right:1px solid rgba(255,255,255,0.06);position:fixed;top:0;left:0;bottom:0;display:flex;flex-direction:column;z-index:100;}
+.sb-head{padding:1.4rem 1.2rem;border-bottom:1px solid rgba(255,255,255,0.06);}
+.sb-brand{font-family:'Bebas Neue',Impact,sans-serif;font-size:1.4rem;color:var(--yellow);letter-spacing:0.05em;}
+.sb-tag{font-size:0.58rem;color:var(--green);font-weight:700;letter-spacing:0.16em;text-transform:uppercase;margin-top:2px;}
+.sb-nav{flex:1;padding:1rem 0.7rem;}
+.sb-item{display:flex;align-items:center;gap:0.7rem;padding:0.7rem 0.8rem;border-radius:6px;cursor:pointer;color:var(--gray);font-size:0.82rem;font-weight:600;transition:all 0.2s;margin-bottom:2px;}
+.sb-item:hover{background:rgba(255,255,255,0.05);color:var(--white);}
+.sb-item.active{background:rgba(250,204,21,0.1);color:var(--yellow);border-left:3px solid var(--yellow);}
+.sb-bottom{padding:1rem;border-top:1px solid rgba(255,255,255,0.06);}
+.sb-user{font-size:0.75rem;color:var(--gray);margin-bottom:0.7rem;}
+.sb-user strong{color:var(--white);display:block;}
+
+.admin-main{margin-left:220px;flex:1;}
+.admin-topbar{background:rgba(10,10,10,0.97);border-bottom:1px solid rgba(255,255,255,0.06);padding:0 1.5rem;height:58px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;backdrop-filter:blur(12px);}
+.topbar-title{font-family:'Bebas Neue',Impact,sans-serif;font-size:1.3rem;letter-spacing:0.04em;}
+.admin-content{padding:1.5rem;display:none;}
+.admin-content.active{display:block;animation:fadeIn 0.25s ease;}
+
+/* LOGIN */
+#loginWrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem;}
+.login-box{background:var(--dark);border:1px solid var(--bdr);border-radius:14px;padding:2.5rem 2rem;width:100%;max-width:380px;position:relative;}
+.login-box::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--yellow),var(--green));border-radius:14px 14px 0 0;}
+.login-logo{font-family:'Bebas Neue',Impact,sans-serif;font-size:1.8rem;color:var(--yellow);letter-spacing:0.05em;text-align:center;margin-bottom:0.2rem;}
+.login-sub{font-size:0.65rem;color:var(--green);font-weight:700;letter-spacing:0.18em;text-transform:uppercase;text-align:center;margin-bottom:2rem;}
+
+/* FORM FIELDS */
+.fg{display:flex;flex-direction:column;gap:0.35rem;margin-bottom:1rem;}
+.fg label{font-size:0.65rem;color:var(--yellow);font-weight:700;letter-spacing:0.15em;text-transform:uppercase;}
+.fg input,.fg select,.fg textarea{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:4px;color:var(--white);padding:0.72rem 0.9rem;font-family:'Syne',system-ui,sans-serif;font-size:0.85rem;outline:none;width:100%;transition:border-color 0.2s;}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--yellow);}
+.fg input::placeholder,.fg textarea::placeholder{color:var(--gray2);}
+.fg select option{background:var(--dark);}
+.fg .hint{font-size:0.7rem;color:var(--gray2);margin-top:0.2rem;}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:0.8rem;}
+
+/* BUTTONS */
+.btn{font-family:'Bebas Neue',Impact,sans-serif;letter-spacing:0.08em;border:none;border-radius:4px;cursor:pointer;transition:all 0.2s;font-size:1rem;}
+.btn-y{background:var(--yellow);color:var(--black);padding:0.75rem 1.4rem;}
+.btn-y:hover{box-shadow:0 6px 20px rgba(250,204,21,0.25);transform:translateY(-1px);}
+.btn-y:disabled{opacity:0.6;cursor:not-allowed;transform:none;}
+.btn-g{background:rgba(34,197,94,0.12);border:1px solid rgba(34,197,94,0.3);color:var(--green);padding:0.5rem 1rem;font-size:0.85rem;}
+.btn-g:hover{background:rgba(34,197,94,0.2);}
+.btn-r{background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.3);color:#f87171;padding:0.5rem 1rem;font-size:0.85rem;font-family:'Syne',system-ui,sans-serif;font-weight:700;}
+.btn-r:hover{background:rgba(239,68,68,0.22);}
+.btn-sm{padding:0.32rem 0.75rem;font-size:0.78rem;}
+.btn-logout{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.25);color:#f87171;padding:0.5rem 1rem;font-family:'Syne',system-ui,sans-serif;font-size:0.78rem;font-weight:700;border-radius:4px;cursor:pointer;width:100%;transition:all 0.2s;}
+.btn-logout:hover{background:rgba(239,68,68,0.2);}
+.err{display:none;color:#f87171;font-size:0.78rem;margin-top:0.6rem;}
+.ok-msg{display:none;color:var(--green);font-size:0.82rem;font-weight:700;margin-top:0.6rem;text-align:center;}
+
+/* STATS ROW */
+.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:1rem;margin-bottom:1.5rem;}
+.stat-box{background:var(--dark);border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:1.1rem;position:relative;overflow:hidden;}
+.stat-box::before{content:'';position:absolute;top:0;left:0;bottom:0;width:3px;}
+.stat-box.y::before{background:var(--yellow);}
+.stat-box.g::before{background:var(--green);}
+.stat-box.b::before{background:var(--blue);}
+.stat-box.o::before{background:var(--orange);}
+.stat-num{font-family:'Bebas Neue',Impact,sans-serif;font-size:2.2rem;line-height:1;margin-bottom:0.2rem;}
+.stat-box.y .stat-num{color:var(--yellow);}
+.stat-box.g .stat-num{color:var(--green);}
+.stat-box.b .stat-num{color:var(--blue);}
+.stat-box.o .stat-num{color:var(--orange);}
+.stat-lbl{font-size:0.68rem;color:var(--gray);font-weight:600;text-transform:uppercase;letter-spacing:0.08em;}
+
+/* SECTION HEADER */
+.sec-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.2rem;flex-wrap:wrap;gap:0.8rem;}
+.sec-title{font-family:'Bebas Neue',Impact,sans-serif;font-size:1.3rem;letter-spacing:0.04em;color:var(--yellow);}
+.sec-meta{font-size:0.75rem;color:var(--green);font-weight:700;}
+
+/* STUDENT CARDS */
+.student-list{display:flex;flex-direction:column;gap:0.8rem;}
+.s-card{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:1rem;}
+.s-card-top{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.7rem;}
+.s-name{font-weight:700;font-size:0.9rem;}
+.s-detail{font-size:0.73rem;color:var(--gray);margin-top:0.2rem;}
+.s-actions{display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap;}
+.s-meta{display:flex;gap:0.8rem;flex-wrap:wrap;}
+.s-meta-item{font-size:0.7rem;}
+.mk{color:var(--gray2);}
+.mv{color:var(--gray);font-weight:600;}
+.mv.cert{color:var(--green);}
+
+/* STATUS PILLS */
+.pill{display:inline-flex;align-items:center;padding:0.18rem 0.6rem;border-radius:20px;font-size:0.63rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;}
+.pill.active{background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.3);color:var(--green);}
+.pill.pending{background:rgba(250,204,21,0.1);border:1px solid rgba(250,204,21,0.3);color:var(--yellow);}
+.pill.suspended{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);color:#f87171;}
+.pill.paid{background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.3);color:var(--green);}
+.pill.unpaid{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);color:#f87171;}
+
+/* SEARCH BAR */
+.search-bar{display:flex;gap:0.7rem;margin-bottom:1.2rem;flex-wrap:wrap;}
+.search-bar input{flex:1;min-width:180px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:4px;color:var(--white);padding:0.65rem 0.9rem;font-family:'Syne',system-ui,sans-serif;font-size:0.85rem;outline:none;}
+.search-bar input:focus{border-color:var(--yellow);}
+.search-bar select{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:4px;color:var(--white);padding:0.65rem 0.9rem;font-family:'Syne',system-ui,sans-serif;font-size:0.82rem;outline:none;}
+.search-bar select option{background:var(--dark);}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:1000;align-items:center;justify-content:center;padding:1rem;overflow-y:auto;}
+.modal-overlay.open{display:flex;}
+.modal-box{background:var(--dark);border:1px solid var(--bdr);border-radius:12px;padding:1.8rem;width:100%;max-width:520px;position:relative;margin:auto;}
+.modal-box::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--yellow),var(--green));border-radius:12px 12px 0 0;}
+.modal-title{font-family:'Bebas Neue',Impact,sans-serif;font-size:1.4rem;color:var(--yellow);letter-spacing:0.04em;margin-bottom:0.2rem;}
+.modal-sub{font-size:0.82rem;color:var(--gray);margin-bottom:1.4rem;}
+.modal-btns{display:grid;grid-template-columns:1fr 1fr;gap:0.8rem;margin-top:1rem;}
+.confirm-text{color:var(--gray);font-size:0.85rem;line-height:1.6;margin-bottom:1.5rem;}
+
+/* FORM CARD */
+.form-card{background:var(--dark);border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:1.5rem;margin-bottom:1.5rem;position:relative;overflow:hidden;}
+.form-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--yellow),var(--green));}
+.form-card-title{font-family:'Bebas Neue',Impact,sans-serif;font-size:1.2rem;letter-spacing:0.04em;color:var(--yellow);margin-bottom:0.2rem;}
+.form-card-sub{font-size:0.78rem;color:var(--gray);margin-bottom:1.4rem;}
+
+.empty{text-align:center;color:var(--gray);padding:3rem;font-size:0.85rem;}
+
+/* HAMBURGER */
+.hamburger{display:none;background:none;border:none;color:var(--white);font-size:1.3rem;cursor:pointer;}
+
+@media(max-width:700px){
+  .admin-sidebar{transform:translateX(-100%);transition:transform 0.3s;}
+  .admin-sidebar.open{transform:translateX(0);}
+  .admin-main{margin-left:0;}
+  .hamburger{display:block;}
+  .two-col{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- LOADER -->
+<div id="appLoader">
+  <div class="loader-brand">Thrive Skill Tech</div>
+  <div class="spinner"></div>
+</div>
+
+<!-- LOGIN -->
+<div id="loginWrap" style="display:none;">
+  <div class="login-box">
+    <div class="login-logo">Thrive Skill Tech</div>
+    <div class="login-sub">Admin Panel</div>
+    <div class="fg"><label for="aEmail">Admin Email</label><input type="email" id="aEmail" placeholder="admin@thriveskilltech.com" autocomplete="email"/></div>
+    <div class="fg"><label for="aPass">Password</label><input type="password" id="aPass" placeholder="••••••" autocomplete="current-password"/></div>
+    <button class="btn btn-y" style="width:100%;margin-top:0.5rem;" id="loginBtn" onclick="doLogin()" aria-label="Login to admin panel">Login to Admin Panel</button>
+    <div class="err" id="loginErr"></div>
+  </div>
+</div>
+
+<!-- ADMIN APP -->
+<div id="adminApp" style="display:none;">
+  <div class="admin-layout">
+
+    <!-- SIDEBAR -->
+    <div class="admin-sidebar" id="sidebar">
+      <div class="sb-head">
+        <div class="sb-brand">Thrive Skill Tech</div>
+        <div class="sb-tag">Admin Panel</div>
+      </div>
+      <nav class="sb-nav">
+        <div class="sb-item active" onclick="showSection('dashboard')" aria-label="Dashboard">&#128200; Dashboard</div>
+        <div class="sb-item" onclick="showSection('students')" aria-label="All Students">&#128101; All Students</div>
+        <div class="sb-item" onclick="showSection('add')" aria-label="Add Student">&#10133; Add Student</div>
+        <div class="sb-item" onclick="showSection('pending')" aria-label="Pending Approvals">&#9203; Pending</div>
+        <div class="sb-item" onclick="showSection('settings')" aria-label="Settings">&#9881; Settings</div>
+      </nav>
+      <div class="sb-bottom">
+        <div class="sb-user"><strong id="adminNameSb">Admin</strong>Signed in</div>
+        <button class="btn-logout" onclick="doLogout()" aria-label="Sign out">Sign Out</button>
+      </div>
+    </div>
+
+    <!-- MAIN -->
+    <div class="admin-main">
+      <div class="admin-topbar">
+        <div style="display:flex;align-items:center;gap:1rem;">
+          <button class="hamburger" onclick="toggleSidebar()" aria-label="Toggle menu">&#9776;</button>
+          <div class="topbar-title" id="pageTitle">Dashboard</div>
+        </div>
+        <div style="font-size:0.75rem;color:var(--gray);" id="adminEmailTop"></div>
+      </div>
+
+      <!-- DASHBOARD -->
+      <div class="admin-content active" id="sec-dashboard">
+        <div class="stats-row">
+          <div class="stat-box y"><div class="stat-num" id="stTotal">0</div><div class="stat-lbl">Total Students</div></div>
+          <div class="stat-box g"><div class="stat-num" id="stActive">0</div><div class="stat-lbl">Active</div></div>
+          <div class="stat-box o"><div class="stat-num" id="stPending">0</div><div class="stat-lbl">Pending</div></div>
+          <div class="stat-box b"><div class="stat-num" id="stRevenue">0</div><div class="stat-lbl">Revenue (Rs.)</div></div>
+        </div>
+        <div class="form-card">
+          <div class="form-card-title">Recent Registrations</div>
+          <div class="form-card-sub">Latest 5 students who registered</div>
+          <div id="recentList"><div class="empty">Loading...</div></div>
+        </div>
+        <div class="form-card">
+          <div class="form-card-title">&#9203; Pending Approvals</div>
+          <div class="form-card-sub">Students waiting for account activation</div>
+          <div id="pendingList"><div class="empty">Loading...</div></div>
+        </div>
+      </div>
+
+      <!-- ALL STUDENTS -->
+      <div class="admin-content" id="sec-students">
+        <div class="sec-hdr">
+          <div><div class="sec-title">All Students</div><div class="sec-meta" id="studentCount"></div></div>
+          <button class="btn btn-y btn-sm" onclick="loadStudents()" aria-label="Refresh student list">&#8635; Refresh</button>
+        </div>
+        <div class="search-bar">
+          <input type="text" id="searchInput" placeholder="Search by name, phone, email..." oninput="filterStudents()"/>
+          <select id="filterStatus" onchange="filterStudents()">
+            <option value="">All Status</option>
+            <option value="active">Active</option>
+            <option value="pending">Pending</option>
+            <option value="suspended">Suspended</option>
+          </select>
+          <select id="filterCourse" onchange="filterStudents()">
+            <option value="">All Courses</option>
+            <option value="CCSC">CCSC</option>
+            <option value="MCDM">MCDM</option>
+          </select>
+        </div>
+        <div class="student-list" id="studentList"><div class="empty">Loading...</div></div>
+      </div>
+
+      <!-- ADD STUDENT -->
+      <div class="admin-content" id="sec-add">
+        <div class="form-card">
+          <div class="form-card-title">Add New Student</div>
+          <div class="form-card-sub">Manually register a student who has paid. They will receive login credentials via WhatsApp.</div>
+          <div class="two-col">
+            <div class="fg"><label>First Name *</label><input type="text" id="nFirst" placeholder="Rahul"/></div>
+            <div class="fg"><label>Last Name *</label><input type="text" id="nLast" placeholder="Patil"/></div>
+          </div>
+          <div class="fg"><label>Phone Number *</label><input type="tel" id="nPhone" placeholder="9876543210 (10 digits)"/></div>
+          <div class="fg"><label>Email Address *</label><input type="email" id="nEmail" placeholder="student@email.com"/><div class="hint">Student will use this to log in to the dashboard</div></div>
+          <div class="fg"><label>City *</label><input type="text" id="nCity" placeholder="Nagpur / Mumbai / Bhandara"/></div>
+          <div class="fg">
+            <label>Course *</label>
+            <select id="nCourse">
+              <option value="">Select course...</option>
+              <option value="CCSC">CCSC – Certified Content Strategy Course (Rs. 1,999)</option>
+              <option value="MCDM">MCDM – Master in Content Creation and Digital Marketing (Rs. 8,999)</option>
+            </select>
+          </div>
+          <div class="two-col">
+            <div class="fg"><label>Amount Paid (Rs.) *</label><input type="number" id="nPaid" placeholder="1999"/></div>
+            <div class="fg"><label>Payment Method</label><select id="nPayMethod"><option value="UPI">UPI</option><option value="Bank Transfer">Bank Transfer</option><option value="Cash">Cash</option><option value="Razorpay">Razorpay</option><option value="Other">Other</option></select></div>
+          </div>
+          <div class="fg"><label>Payment ID / Reference</label><input type="text" id="nPayId" placeholder="UPI transaction ID or receipt number"/></div>
+          <div class="fg">
+            <label>Initial Password for Student *</label>
+            <input type="text" id="nPassword" placeholder="e.g. Thrive@1234"/>
+            <div class="hint">Share this with the student via WhatsApp. They can change it after login.</div>
+          </div>
+          <div class="fg">
+            <label>Account Status</label>
+            <select id="nStatus">
+              <option value="active">Active (can log in immediately)</option>
+              <option value="pending">Pending (needs verification first)</option>
+            </select>
+          </div>
+          <button class="btn btn-y" id="addStudentBtn" onclick="addStudent()" aria-label="Add student to Firebase" style="width:100%;font-size:1.05rem;padding:0.9rem;">&#10133; Add Student to Dashboard</button>
+          <div class="err" id="addErr"></div>
+          <div class="ok-msg" id="addOk"></div>
+        </div>
+      </div>
+
+      <!-- PENDING -->
+      <div class="admin-content" id="sec-pending">
+        <div class="sec-hdr">
+          <div><div class="sec-title">Pending Approvals</div><div class="sec-meta" id="pendingCount"></div></div>
+          <button class="btn btn-y btn-sm" onclick="loadPending()" aria-label="Refresh">&#8635; Refresh</button>
+        </div>
+        <div class="student-list" id="pendingStudentList"><div class="empty">Loading...</div></div>
+      </div>
+
+      <!-- SETTINGS -->
+      <div class="admin-content" id="sec-settings">
+        <div class="form-card">
+          <div class="form-card-title">Admin Account</div>
+          <div class="form-card-sub">Manage your admin credentials</div>
+          <div class="fg"><label>Display Name</label><input type="text" id="settingName" placeholder="Tej Pawar"/></div>
+          <div class="fg"><label>New Password</label><input type="password" id="settingPass" placeholder="Leave blank to keep current"/></div>
+          <button class="btn btn-y" onclick="saveSettings()" aria-label="Save settings">Save Settings</button>
+          <div class="ok-msg" id="settingsOk"></div>
+        </div>
+        <div class="form-card">
+          <div class="form-card-title">Firebase Project</div>
+          <div class="form-card-sub">Connected to: thrive-skill-tech</div>
+          <div style="font-size:0.8rem;color:var(--gray);line-height:1.8;">
+            Project ID: thrive-skill-tech<br>
+            Auth: Email/Password (enabled)<br>
+            Database: Firestore (default)<br>
+            Region: asia-south1
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end admin-main -->
+  </div><!-- end admin-layout -->
+</div><!-- end adminApp -->
+
+<!-- MANAGE STUDENT MODAL -->
+<div class="modal-overlay" id="manageModal" role="dialog" aria-modal="true" aria-labelledby="manageModalTitle">
+  <div class="modal-box">
+    <div class="modal-title" id="manageModalTitle">Manage Student</div>
+    <div class="modal-sub" id="manageModalSub"></div>
+    <div class="fg"><label for="mStatus">Account Status</label>
+      <select id="mStatus" aria-label="Account status">
+        <option value="pending">Pending</option>
+        <option value="active">Active</option>
+        <option value="suspended">Suspended</option>
+      </select>
+    </div>
+    <div class="fg"><label for="mProgress">Course Progress (%)</label><input type="number" id="mProgress" min="0" max="100" aria-label="Course progress"/></div>
+    <div class="fg"><label for="mPaid">Amount Paid (Rs.)</label><input type="number" id="mPaid" aria-label="Amount paid"/></div>
+    <div class="fg"><label for="mCertUrl">Certificate Link (Google Drive)</label><input type="url" id="mCertUrl" placeholder="https://drive.google.com/file/d/..."/><div class="hint">Shareable PDF link — student will see a download button</div></div>
+    <div class="fg"><label for="mCertDate">Certificate Issue Date</label><input type="text" id="mCertDate" placeholder="e.g. 5 May 2026"/></div>
+    <div class="fg"><label for="mNotes">Admin Notes (private)</label><textarea id="mNotes" rows="2" placeholder="Internal notes..."></textarea></div>
+    <div class="modal-btns">
+      <button class="btn btn-y" onclick="saveManage()" aria-label="Save changes">Save Changes</button>
+      <button class="btn" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:var(--gray);padding:0.85rem;font-size:1rem;" onclick="closeManageModal()" aria-label="Cancel">Cancel</button>
+    </div>
+    <div class="ok-msg" id="manageOk"></div>
+    <div class="err" id="manageErr"></div>
+  </div>
+</div>
+
+<!-- DELETE CONFIRM MODAL -->
+<div class="modal-overlay" id="deleteModal" role="dialog" aria-modal="true" aria-labelledby="deleteModalTitle">
+  <div class="modal-box" style="max-width:400px;">
+    <div class="modal-title" id="deleteModalTitle" style="color:#f87171;">Delete Student</div>
+    <p class="confirm-text">Permanently delete <strong id="deleteStudentName"></strong>? This removes their Firestore data. Their Firebase Auth account will also be deactivated. <strong>This cannot be undone.</strong></p>
+    <div class="modal-btns">
+      <button class="btn" style="background:#ef4444;color:#fff;font-size:1rem;padding:0.85rem;" onclick="confirmDelete()" aria-label="Confirm delete">Yes, Delete</button>
+      <button class="btn" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:var(--gray);padding:0.85rem;font-size:1rem;" onclick="closeDeleteModal()" aria-label="Cancel">Cancel</button>
+    </div>
+    <div class="err" id="deleteErr"></div>
+  </div>
+</div>
+
+<!-- FIREBASE SDK -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, createUserWithEmailAndPassword, updatePassword }
+  from "https://www.gstatic.com/firebasejs/11.7.1/firebase-auth.js";
+import { getFirestore, collection, doc, setDoc, getDoc, getDocs, updateDoc, deleteDoc, query, where, orderBy, limit, serverTimestamp }
+  from "https://www.gstatic.com/firebasejs/11.7.1/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAJAGCe6wIhP9T2rQ6gqTMD_re0OGnTaVY",
+  authDomain: "thrive-skill-tech.firebaseapp.com",
+  projectId: "thrive-skill-tech",
+  storageBucket: "thrive-skill-tech.firebasestorage.app",
+  messagingSenderId: "969286367743",
+  appId: "1:969286367743:web:2e31930f37af2e9b6e4f3c",
+  measurementId: "G-9RV5S5VCDF"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+// ADMIN EMAIL — only this email can access the admin panel
+const ADMIN_EMAIL = "tejpawar@thriveskilltech.com";
+
+let allStudents = [];
+let editingUid = "";
+let deletingUid = "";
+
+function el(id) { return document.getElementById(id); }
+function setText(id, v) { const e = el(id); if (e) e.textContent = v; }
+function showErr(id, msg) { const e = el(id); if (e) { e.textContent = msg; e.style.display = "block"; } }
+function hideErr(id) { const e = el(id); if (e) e.style.display = "none"; }
+function showOk(id, msg) { const e = el(id); if (e) { e.textContent = msg; e.style.display = "block"; setTimeout(() => { e.style.display = "none"; }, 3000); } }
+
+// ── AUTH STATE ────────────────────────────────────────────────
+onAuthStateChanged(auth, async (user) => {
+  el("appLoader").style.display = "none";
+  if (user && user.email === ADMIN_EMAIL) {
+    el("loginWrap").style.display = "none";
+    el("adminApp").style.display = "block";
+    setText("adminEmailTop", user.email);
+    setText("adminNameSb", user.displayName || "Admin");
+    await loadDashboard();
+  } else {
+    if (user) await signOut(auth); // non-admin user — sign out
+    el("loginWrap").style.display = "flex";
+  }
+});
+
+// ── LOGIN ─────────────────────────────────────────────────────
+window.doLogin = async function() {
+  const email = el("aEmail").value.trim();
+  const pass = el("aPass").value;
+  hideErr("loginErr");
+  if (!email || !pass) { showErr("loginErr", "Enter email and password."); return; }
+  el("loginBtn").disabled = true; el("loginBtn").textContent = "Signing in...";
+  try {
+    const cred = await signInWithEmailAndPassword(auth, email, pass);
+    if (cred.user.email !== ADMIN_EMAIL) {
+      await signOut(auth);
+      showErr("loginErr", "Access denied. This panel is for admins only.");
+    }
+  } catch (e) {
+    const msgs = { "auth/invalid-credential":"Incorrect email or password.", "auth/user-not-found":"No admin account found.", "auth/wrong-password":"Incorrect password." };
+    showErr("loginErr", msgs[e.code] || e.message);
+  } finally { el("loginBtn").disabled = false; el("loginBtn").textContent = "Login to Admin Panel"; }
+};
+
+window.doLogout = async function() {
+  await signOut(auth);
+  el("adminApp").style.display = "none";
+  el("loginWrap").style.display = "flex";
+  el("aEmail").value = ""; el("aPass").value = "";
+};
+
+// ── NAVIGATION ────────────────────────────────────────────────
+window.showSection = function(sec) {
+  document.querySelectorAll(".admin-content").forEach(s => s.classList.remove("active"));
+  document.querySelectorAll(".sb-item").forEach(s => s.classList.remove("active"));
+  el("sec-" + sec).classList.add("active");
+  const titles = { dashboard:"Dashboard", students:"All Students", add:"Add New Student", pending:"Pending Approvals", settings:"Settings" };
+  setText("pageTitle", titles[sec] || sec);
+  if (sec === "students") loadStudents();
+  if (sec === "pending") loadPending();
+  if (window.innerWidth <= 700) el("sidebar").classList.remove("open");
+};
+window.toggleSidebar = function() { el("sidebar").classList.toggle("open"); };
+
+// ── LOAD DASHBOARD ────────────────────────────────────────────
+async function loadDashboard() {
+  try {
+    const snap = await getDocs(collection(db, "students"));
+    const students = snap.docs.map(d => ({ uid: d.id, ...d.data() }));
+    allStudents = students;
+    const total = students.length;
+    const active = students.filter(s => s.status === "active").length;
+    const pending = students.filter(s => s.status === "pending").length;
+    const revenue = students.reduce((sum, s) => sum + (Number(s.paid) || 0), 0);
+    setText("stTotal", total);
+    setText("stActive", active);
+    setText("stPending", pending);
+    setText("stRevenue", revenue.toLocaleString("en-IN"));
+
+    // Recent 5
+    const sorted = [...students].sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+    const recentEl = el("recentList");
+    recentEl.innerHTML = "";
+    if (sorted.length === 0) { recentEl.innerHTML = '<div class="empty">No students yet.</div>'; }
+    else {
+      sorted.slice(0, 5).forEach(s => {
+        const row = document.createElement("div");
+        row.style.cssText = "display:flex;justify-content:space-between;align-items:center;padding:0.6rem 0;border-bottom:1px solid rgba(255,255,255,0.05);flex-wrap:wrap;gap:0.4rem;";
+        row.innerHTML = `<div><div style="font-weight:700;font-size:0.85rem;">${s.name}</div><div style="font-size:0.7rem;color:var(--gray);">${s.course} · ${s.phone}</div></div><span class="pill ${s.status||'pending'}">${s.status||'pending'}</span>`;
+        recentEl.appendChild(row);
+      });
+    }
+
+    // Pending approvals on dashboard
+    const pendingStudents = students.filter(s => s.status === "pending");
+    const pendingEl = el("pendingList");
+    pendingEl.innerHTML = "";
+    if (pendingStudents.length === 0) {
+      pendingEl.innerHTML = '<div class="empty">No pending approvals ✓</div>';
+    } else {
+      pendingStudents.forEach(s => {
+        const row = document.createElement("div");
+        row.style.cssText = "display:flex;justify-content:space-between;align-items:center;padding:0.7rem 0;border-bottom:1px solid rgba(255,255,255,0.05);flex-wrap:wrap;gap:0.5rem;";
+        row.innerHTML = `<div><div style="font-weight:700;font-size:0.85rem;">${s.name}</div><div style="font-size:0.7rem;color:var(--gray);">${s.course} · +91 ${s.phone} · ${s.email}</div></div>
+          <div style="display:flex;gap:0.5rem;">
+            <button class="btn btn-g btn-sm" onclick="quickApprove('${s.uid}')" aria-label="Approve ${s.name}">✓ Approve</button>
+            <button class="btn btn-r btn-sm" onclick="openManageModal('${s.uid}')" aria-label="Manage ${s.name}">Manage</button>
+          </div>`;
+        pendingEl.appendChild(row);
+      });
+    }
+  } catch (e) {
+    console.error("loadDashboard error:", e);
+  }
+}
+
+window.quickApprove = async function(uid) {
+  try {
+    await updateDoc(doc(db, "students", uid), { status: "active" });
+    await loadDashboard();
+    showOk("addOk", "Student approved!");
+  } catch (e) { alert("Error: " + e.message); }
+};
+
+// ── LOAD ALL STUDENTS ─────────────────────────────────────────
+async function loadStudents() {
+  try {
+    const snap = await getDocs(collection(db, "students"));
+    allStudents = snap.docs.map(d => ({ uid: d.id, ...d.data() }));
+    allStudents.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+    setText("studentCount", allStudents.length + " students total");
+    renderStudentList(allStudents);
+  } catch (e) { el("studentList").innerHTML = `<div class="empty">Error loading: ${e.message}</div>`; }
+}
+window.loadStudents = loadStudents;
+
+window.filterStudents = function() {
+  const q = el("searchInput").value.toLowerCase();
+  const status = el("filterStatus").value;
+  const course = el("filterCourse").value;
+  const filtered = allStudents.filter(s => {
+    const matchQ = !q || s.name?.toLowerCase().includes(q) || s.phone?.includes(q) || s.email?.toLowerCase().includes(q) || s.city?.toLowerCase().includes(q);
+    const matchStatus = !status || s.status === status;
+    const matchCourse = !course || s.course === course;
+    return matchQ && matchStatus && matchCourse;
+  });
+  renderStudentList(filtered);
+};
+
+function renderStudentList(students) {
+  const list = el("studentList"); list.innerHTML = "";
+  if (students.length === 0) { list.innerHTML = '<div class="empty">No students found.</div>'; return; }
+  students.forEach(s => {
+    const card = document.createElement("div"); card.className = "s-card";
+    const top = document.createElement("div"); top.className = "s-card-top";
+    const info = document.createElement("div");
+    info.innerHTML = `<div class="s-name">${s.name}</div><div class="s-detail">+91 ${s.phone} · ${s.email} · ${s.city}</div>`;
+    const actions = document.createElement("div"); actions.className = "s-actions";
+    const pill = document.createElement("span"); pill.className = "pill " + (s.status || "pending"); pill.textContent = s.status || "pending";
+    const mBtn = document.createElement("button"); mBtn.className = "btn btn-y btn-sm"; mBtn.textContent = "Manage";
+    mBtn.setAttribute("aria-label", "Manage " + s.name);
+    mBtn.onclick = () => openManageModal(s.uid);
+    const dBtn = document.createElement("button"); dBtn.className = "btn btn-r btn-sm"; dBtn.textContent = "Delete";
+    dBtn.setAttribute("aria-label", "Delete " + s.name);
+    dBtn.setAttribute("title", "Permanently delete " + s.name);
+    dBtn.onclick = () => openDeleteModal(s.uid);
+    actions.appendChild(pill); actions.appendChild(mBtn); actions.appendChild(dBtn);
+    top.appendChild(info); top.appendChild(actions);
+    const meta = document.createElement("div"); meta.className = "s-meta";
+    const metaItems = [
+      { k: "ID", v: s.id || "-" },
+      { k: "Course", v: s.course || "-" },
+      { k: "Progress", v: (s.progress || 0) + "%" },
+      { k: "Paid", v: s.paid ? "Rs. " + Number(s.paid).toLocaleString("en-IN") : "Pending" },
+      { k: "Enrolled", v: s.enrollDate || "-" },
+      { k: "Certificate", v: s.certificateUrl ? "Issued" : "Not issued", cert: !!s.certificateUrl }
+    ];
+    metaItems.forEach(m => {
+      const mi = document.createElement("div"); mi.className = "s-meta-item";
+      mi.innerHTML = `<span class="mk">${m.k}: </span><span class="mv${m.cert ? " cert" : ""}">${m.v}</span>`;
+      meta.appendChild(mi);
+    });
+    card.appendChild(top); card.appendChild(meta); list.appendChild(card);
+  });
+}
+
+// ── LOAD PENDING ──────────────────────────────────────────────
+async function loadPending() {
+  try {
+    const snap = await getDocs(query(collection(db, "students"), where("status", "==", "pending")));
+    const students = snap.docs.map(d => ({ uid: d.id, ...d.data() }));
+    setText("pendingCount", students.length + " pending");
+    const list = el("pendingStudentList"); list.innerHTML = "";
+    if (students.length === 0) { list.innerHTML = '<div class="empty">No pending approvals ✓</div>'; return; }
+    students.forEach(s => {
+      const card = document.createElement("div"); card.className = "s-card";
+      card.innerHTML = `<div class="s-card-top">
+        <div><div class="s-name">${s.name}</div><div class="s-detail">+91 ${s.phone} · ${s.email} · ${s.course} · ${s.city}</div></div>
+        <div class="s-actions">
+          <button class="btn btn-g btn-sm" onclick="quickApprove('${s.uid}')" aria-label="Approve ${s.name}">✓ Approve</button>
+          <button class="btn btn-y btn-sm" onclick="openManageModal('${s.uid}')" aria-label="Manage ${s.name}">Manage</button>
+          <button class="btn btn-r btn-sm" onclick="openDeleteModal('${s.uid}')" aria-label="Reject ${s.name}">Reject</button>
+        </div></div>
+        <div class="s-meta" style="margin-top:0.5rem;">
+          <div class="s-meta-item"><span class="mk">Registered: </span><span class="mv">${s.enrollDate || "-"}</span></div>
+          <div class="s-meta-item"><span class="mk">Paid: </span><span class="mv">${s.paid ? "Rs. " + Number(s.paid).toLocaleString("en-IN") : "Not specified"}</span></div>
+          <div class="s-meta-item"><span class="mk">Pay ID: </span><span class="mv">${s.payId || "-"}</span></div>
+        </div>`;
+      list.appendChild(card);
+    });
+  } catch (e) { el("pendingStudentList").innerHTML = `<div class="empty">Error: ${e.message}</div>`; }
+}
+window.loadPending = loadPending;
+
+// ── ADD STUDENT ───────────────────────────────────────────────
+window.addStudent = async function() {
+  const first = el("nFirst").value.trim();
+  const last = el("nLast").value.trim();
+  const phone = el("nPhone").value.replace(/[^0-9]/g, "").slice(-10);
+  const email = el("nEmail").value.trim().toLowerCase();
+  const city = el("nCity").value.trim();
+  const course = el("nCourse").value;
+  const paid = parseFloat(el("nPaid").value) || 0;
+  const payMethod = el("nPayMethod").value;
+  const payId = el("nPayId").value.trim();
+  const password = el("nPassword").value;
+  const status = el("nStatus").value;
+  hideErr("addErr"); el("addOk").style.display = "none";
+
+  if (!first || !last || !phone || !email || !city || !course || !password) { showErr("addErr", "Please fill all required fields."); return; }
+  if (!/^[6-9][0-9]{9}$/.test(phone)) { showErr("addErr", "Invalid phone number. Must be 10 digits starting with 6–9."); return; }
+  if (password.length < 6) { showErr("addErr", "Password must be at least 6 characters."); return; }
+  if (paid < 0) { showErr("addErr", "Amount paid cannot be negative."); return; }
+
+  el("addStudentBtn").disabled = true; el("addStudentBtn").textContent = "Adding student...";
+
+  try {
+    // Create Firebase Auth account for the student
+    const cred = await createUserWithEmailAndPassword(auth, email, password);
+    const uid = cred.user.uid;
+    const courseNames = { CCSC: "Certified Content Strategy Course", MCDM: "Master in Content Creation and Digital Marketing" };
+    const courseDurations = { CCSC: "7 Days", MCDM: "2 Months + 1 Month Internship" };
+    const courseFees = { CCSC: 1999, MCDM: 8999 };
+    const dateStr = new Date().toLocaleDateString("en-IN");
+    const newId = "TST-" + course + "-" + Date.now().toString().slice(-5);
+
+    await setDoc(doc(db, "students", uid), {
+      id: newId, name: first + " " + last, first, last,
+      phone, email, city, course,
+      courseFull: courseNames[course],
+      enrollDate: dateStr,
+      duration: courseDurations[course],
+      fee: courseFees[course],
+      paid, payMethod, payId: payId || "N/A",
+      progress: 0,
+      completedModules: 0,
+      totalModules: course === "CCSC" ? 7 : 20,
+      daysLeft: course === "CCSC" ? 7 : 60,
+      assignments: 0,
+      status,
+      certificateUrl: "",
+      certificateIssuedDate: "",
+      adminNotes: "",
+      createdAt: serverTimestamp()
+    });
+
+    // Sign admin back in after creating student account
+    await signOut(auth);
+    // Re-auth admin — store current admin creds temporarily
+    showOk("addOk", `✓ ${first} ${last} added successfully! ID: ${newId}. Login: ${email} / ${password}`);
+
+    // Clear form
+    ["nFirst","nLast","nPhone","nEmail","nCity","nPaid","nPayId","nPassword"].forEach(id => { el(id).value = ""; });
+    el("nCourse").value = ""; el("nStatus").value = "active";
+    await loadDashboard();
+
+    alert(`Student added!\n\nName: ${first} ${last}\nEmail: ${email}\nPassword: ${password}\nCourse: ${course}\n\nShare these login details with the student on WhatsApp!`);
+
+  } catch (e) {
+    const msgs = { "auth/email-already-in-use": "This email is already registered in the system.", "auth/invalid-email": "Invalid email address.", "auth/weak-password": "Password too weak — use at least 6 characters." };
+    showErr("addErr", msgs[e.code] || "Error adding student: " + e.message);
+  } finally {
+    el("addStudentBtn").disabled = false; el("addStudentBtn").textContent = "✚ Add Student to Dashboard";
+  }
+};
+
+// ── MANAGE MODAL ──────────────────────────────────────────────
+window.openManageModal = async function(uid) {
+  editingUid = uid;
+  try {
+    const snap = await getDoc(doc(db, "students", uid));
+    if (!snap.exists()) return;
+    const s = snap.data();
+    el("manageModalTitle").textContent = "Manage Student";
+    el("manageModalSub").textContent = s.name + " · " + (s.courseFull || s.course) + " · +91 " + s.phone;
+    el("mStatus").value = s.status || "pending";
+    el("mProgress").value = s.progress || 0;
+    el("mPaid").value = s.paid || 0;
+    el("mCertUrl").value = s.certificateUrl || "";
+    el("mCertDate").value = s.certificateIssuedDate || "";
+    el("mNotes").value = s.adminNotes || "";
+    el("manageOk").style.display = "none";
+    hideErr("manageErr");
+    el("manageModal").classList.add("open");
+  } catch (e) { alert("Error loading student: " + e.message); }
+};
+window.openManageModal = window.openManageModal;
+
+window.closeManageModal = function() { el("manageModal").classList.remove("open"); editingUid = ""; };
+
+window.saveManage = async function() {
+  if (!editingUid) return;
+  hideErr("manageErr");
+  const progress = parseInt(el("mProgress").value);
+  if (isNaN(progress) || progress < 0 || progress > 100) { showErr("manageErr", "Progress must be 0–100."); return; }
+  try {
+    await updateDoc(doc(db, "students", editingUid), {
+      status: el("mStatus").value,
+      progress,
+      paid: parseFloat(el("mPaid").value) || 0,
+      certificateUrl: el("mCertUrl").value.trim(),
+      certificateIssuedDate: el("mCertDate").value.trim(),
+      adminNotes: el("mNotes").value.trim()
+    });
+    showOk("manageOk", "✓ Saved successfully!");
+    setTimeout(() => { closeManageModal(); loadDashboard(); if (el("sec-students").classList.contains("active")) loadStudents(); }, 1200);
+  } catch (e) { showErr("manageErr", "Save failed: " + e.message); }
+};
+
+// ── DELETE MODAL ──────────────────────────────────────────────
+window.openDeleteModal = async function(uid) {
+  deletingUid = uid;
+  try {
+    const snap = await getDoc(doc(db, "students", uid));
+    const s = snap.data();
+    el("deleteStudentName").textContent = (s?.name || "this student") + " (" + (s?.email || uid) + ")";
+    hideErr("deleteErr");
+    el("deleteModal").classList.add("open");
+  } catch (e) { alert("Error: " + e.message); }
+};
+
+window.closeDeleteModal = function() { el("deleteModal").classList.remove("open"); deletingUid = ""; };
+
+window.confirmDelete = async function() {
+  if (!deletingUid) return;
+  hideErr("deleteErr");
+  try {
+    await deleteDoc(doc(db, "students", deletingUid));
+    closeDeleteModal();
+    await loadDashboard();
+    if (el("sec-students").classList.contains("active")) loadStudents();
+    if (el("sec-pending").classList.contains("active")) loadPending();
+  } catch (e) { showErr("deleteErr", "Delete failed: " + e.message); }
+};
+
+// ── SETTINGS ──────────────────────────────────────────────────
+window.saveSettings = async function() {
+  const pass = el("settingPass").value;
+  try {
+    if (pass && pass.length >= 6) {
+      await updatePassword(auth.currentUser, pass);
+      el("settingPass").value = "";
+    }
+    showOk("settingsOk", "✓ Settings saved!");
+  } catch (e) { alert("Error: " + e.message); }
+};
+
+// ── KEYBOARD & MODAL CLOSE ────────────────────────────────────
+el("aPass").addEventListener("keypress", e => { if (e.key === "Enter") window.doLogin(); });
+document.addEventListener("keydown", e => { if (e.key === "Escape") { closeManageModal(); closeDeleteModal(); } });
+el("manageModal").addEventListener("click", e => { if (e.target === el("manageModal")) closeManageModal(); });
+el("deleteModal").addEventListener("click", e => { if (e.target === el("deleteModal")) closeDeleteModal(); });
+
+</script>
+</body>
+</html>
