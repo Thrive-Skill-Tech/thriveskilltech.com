@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="description" content="Thrive Skill Tech Student Dashboard - Access your course content, track progress, view payment status and download your certificate."/>
+<meta name="theme-color" content="#0a0a0a"/>
+<meta name="robots" content="noindex, nofollow"/>
+<title>Student Dashboard - Thrive Skill Tech</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'"/>
+<noscript><link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/></noscript>
+<style>
+:root {
+  --black:#0a0a0a; --black2:#111; --dark:#1a1a1a; --dark2:#222;
+  --green:#22c55e; --green-d:#15803d; --green-l:#86efac;
+  --yellow:#facc15; --yellow-l:#fef08a;
+  --white:#f5f5f0; --gray:#c2c2c2; --gray2:#525252;
+  --red:#ef4444; --blue:#3b82f6; --orange:#f97316;
+  --card:rgba(255,255,255,0.04);
+  --bdr:rgba(250,204,21,0.15);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--black);color:var(--white);font-family:'Syne',system-ui,-apple-system,sans-serif;min-height:100vh;}
+@keyframes spin{to{transform:rotate(360deg);}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+
+/* LOGIN SCREEN */
+#loginScreen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem;background:var(--black);position:relative;}
+#loginScreen::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(250,204,21,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(250,204,21,0.03) 1px,transparent 1px);background-size:50px 50px;}
+.login-box{background:var(--dark);border:1px solid var(--bdr);border-radius:14px;padding:2.5rem 2rem;width:100%;max-width:420px;position:relative;z-index:2;animation:fadeIn 0.4s ease;}
+.login-box::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--yellow),var(--green));border-radius:14px 14px 0 0;}
+.login-logo-area{text-align:center;margin-bottom:2rem;}
+.login-logo-area .brand{font-family:'Bebas Neue',Impact,sans-serif;font-size:1.8rem;color:var(--yellow);letter-spacing:0.05em;}
+.login-logo-area .sub{font-size:0.7rem;color:var(--green);font-weight:700;letter-spacing:0.18em;text-transform:uppercase;margin-top:2px;}
+.lg{display:flex;flex-direction:column;gap:0.35rem;margin-bottom:1rem;}
+.lg label{font-size:0.65rem;color:var(--yellow);font-weight:700;letter-spacing:0.15em;text-transform:uppercase;}
+.lg input,.lg select{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:4px;color:var(--white);padding:0.75rem 1rem;font-family:'Syne',system-ui,-apple-system,sans-serif;font-size:0.88rem;outline:none;width:100%;transition:border-color 0.2s;}
+.lg input:focus,.lg select:focus{border-color:var(--yellow);}
+.lg input::placeholder{color:var(--gray2);}
+.login-btn{width:100%;background:linear-gradient(135deg,var(--yellow),var(--green));color:var(--black);padding:0.9rem;font-family:'Bebas Neue',Impact,sans-serif;font-size:1.1rem;letter-spacing:0.1em;border:none;border-radius:4px;cursor:pointer;transition:all 0.2s;margin-top:0.5rem;position:relative;}
+.login-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(250,204,21,0.2);}
+.login-btn:disabled{opacity:0.6;cursor:not-allowed;transform:none;}
+.login-err{display:none;color:#f87171;font-size:0.78rem;text-align:center;margin-top:0.7rem;}
+.auth-tabs{display:flex;gap:0;margin-bottom:1.5rem;background:rgba(255,255,255,0.04);border-radius:6px;padding:3px;}
+.auth-tab{flex:1;background:transparent;border:none;color:var(--gray);padding:0.6rem;font-family:'Syne',system-ui,sans-serif;font-size:0.82rem;font-weight:700;cursor:pointer;border-radius:4px;transition:all 0.2s;letter-spacing:0.05em;}
+.auth-tab.active{background:var(--yellow);color:var(--black);}
+.auth-panel-title{font-family:'Bebas Neue',Impact,sans-serif;font-size:1.5rem;letter-spacing:0.04em;margin-bottom:0.25rem;color:var(--white);}
+.auth-panel-sub{font-size:0.8rem;color:var(--gray);margin-bottom:1.4rem;}
+.auth-switch{text-align:center;font-size:0.78rem;color:var(--gray);margin-top:1rem;}
+.auth-switch span{color:var(--yellow);cursor:pointer;font-weight:700;}
+.auth-switch span:hover{color:var(--green);}
+.reg-note{background:rgba(250,204,21,0.06);border:1px solid rgba(250,204,21,0.2);border-radius:6px;padding:0.9rem;font-size:0.78rem;color:var(--gray);line-height:1.6;margin-bottom:1rem;}
+.reg-note strong{color:var(--white);}
+
+/* DASHBOARD */
+#dashboard{display:none;}
+.dash-layout{display:flex;min-height:100vh;}
+
+/* SIDEBAR */
+.sidebar{width:240px;background:var(--black2);border-right:1px solid rgba(255,255,255,0.06);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:100;transition:transform 0.3s;}
+.sidebar-head{padding:1.4rem 1.2rem;border-bottom:1px solid rgba(255,255,255,0.06);}
+.sidebar-brand{font-family:'Bebas Neue',Impact,sans-serif;font-size:1.3rem;color:var(--yellow);letter-spacing:0.05em;line-height:1;}
+.sidebar-tag{font-size:0.58rem;color:var(--green);font-weight:700;letter-spacing:0.16em;text-transform:uppercase;margin-top:2px;}
+.sidebar-user{padding:1rem 1.2rem;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;gap:0.8rem;}
+.user-av{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--yellow),var(--green));display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;}
+.user-name{font-size:0.84rem;font-weight:700;color:var(--white);line-height:1.2;}
+.user-course{font-size:0.65rem;color:var(--green);font-weight:600;letter-spacing:0.05em;}
+.sidebar-nav{flex:1;padding:1rem 0.7rem;overflow-y:auto;}
+.nav-section-label{font-size:0.6rem;color:var(--gray2);font-weight:700;letter-spacing:0.18em;text-transform:uppercase;padding:0 0.5rem;margin-bottom:0.5rem;margin-top:1rem;}
+.nav-section-label:first-child{margin-top:0;}
+.nav-item{display:flex;align-items:center;gap:0.75rem;padding:0.7rem 0.8rem;border-radius:6px;cursor:pointer;transition:all 0.2s;color:var(--gray);font-size:0.82rem;font-weight:600;text-decoration:none;margin-bottom:2px;}
+.nav-item:hover{background:rgba(255,255,255,0.05);color:var(--white);}
+.nav-item.active{background:rgba(250,204,21,0.1);color:var(--yellow);border-left:3px solid var(--yellow);}
+.nav-icon{font-size:1rem;flex-shrink:0;}
+.sidebar-bottom{padding:1rem;border-top:1px solid rgba(255,255,255,0.06);}
+.logout-btn{width:100%;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.25);color:#f87171;padding:0.6rem;font-family:'Syne',system-ui,sans-serif;font-size:0.78rem;font-weight:700;border-radius:4px;cursor:pointer;transition:all 0.2s;}
+.logout-btn:hover{background:rgba(239,68,68,0.2);}
+
+/* MAIN */
+.dash-main{margin-left:240px;flex:1;padding:0;min-height:100vh;}
+.dash-topbar{background:rgba(10,10,10,0.95);border-bottom:1px solid rgba(255,255,255,0.06);padding:0 1.5rem;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;backdrop-filter:blur(12px);}
+.topbar-title{font-family:'Bebas Neue',Impact,sans-serif;font-size:1.3rem;letter-spacing:0.04em;color:var(--white);}
+.topbar-right{display:flex;align-items:center;gap:1rem;}
+.notif-btn{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);width:36px;height:36px;border-radius:6px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1rem;position:relative;}
+.notif-dot{position:absolute;top:6px;right:6px;width:8px;height:8px;background:var(--yellow);border-radius:50%;}
+.hamburger-btn{display:none;background:none;border:none;color:var(--white);font-size:1.3rem;cursor:pointer;}
+
+/* PAGES */
+.dash-page{display:none;padding:1.5rem;}
+.dash-page.active{display:block;animation:fadeIn 0.25s ease;}
+
+/* OVERVIEW */
+.welcome-banner{background:linear-gradient(135deg,rgba(250,204,21,0.08),rgba(34,197,94,0.08));border:1px solid var(--bdr);border-radius:10px;padding:1.5rem;margin-bottom:1.5rem;position:relative;overflow:hidden;}
+.welcome-banner::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--yellow),var(--green));}
+.wb-title{font-family:'Bebas Neue',Impact,sans-serif;font-size:1.8rem;color:var(--yellow);letter-spacing:0.04em;line-height:1;}
+.wb-sub{color:var(--gray);font-size:0.85rem;margin-top:0.4rem;}
+.wb-course{display:inline-flex;align-items:center;gap:6px;background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.3);color:var(--green);font-size:0.7rem;font-weight:700;padding:0.25rem 0.7rem;border-radius:2px;text-transform:uppercase;letter-spacing:0.1em;margin-top:0.8rem;}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1rem;margin-bottom:1.5rem;}
+.stat-card{background:var(--dark);border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:1.2rem;position:relative;overflow:hidden;}
+.stat-card::before{content:'';position:absolute;top:0;left:0;bottom:0;width:3px;}
+.stat-card.yellow::before{background:var(--yellow);}
+.stat-card.green::before{background:var(--green);}
+.stat-card.blue::before{background:var(--blue);}
+.stat-card.orange::before{background:var(--orange);}
+.sc-icon{font-size:1.5rem;margin-bottom:0.6rem;}
+.sc-val{font-family:'Bebas Neue',Impact,sans-serif;font-size:2rem;line-height:1;margin-bottom:0.2rem;}
+.stat-card.yellow .sc-val{color:var(--yellow);}
+.stat-card.green .sc-val{color:var(--green);}
+.stat-card.blue .sc-val{color:var(--blue);}
+.stat-card.orange .sc-val{color:var(--orange);}
+.sc-label{font-size:0.7rem;color:var(--gray);font-weight:600;text-transform:uppercase;letter-spacing:0.08em;}
+
+/* PROGRESS BAR */
+.progress-section{background:var(--dark);border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:1.3rem;margin-bottom:1.5rem;}
+.ps-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;}
+.ps-title{font-weight:700;font-size:0.9rem;}
+.ps-pct{font-family:'Space Mono','Courier New',monospace;color:var(--green);font-weight:700;}
+.pbar-bg{background:rgba(255,255,255,0.07);border-radius:10px;height:10px;overflow:hidden;}
+.pbar-fill{height:100%;border-radius:10px;background:linear-gradient(90deg,var(--yellow),var(--green));transition:width 1s ease;}
+.ps-modules{margin-top:1rem;display:flex;flex-direction:column;gap:0.5rem;}
+.pm-item{display:flex;align-items:center;gap:0.7rem;font-size:0.8rem;}
+.pm-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.pm-dot.done{background:var(--green);}
+.pm-dot.active{background:var(--yellow);}
+.pm-dot.lock{background:var(--gray2);}
+.pm-name{flex:1;color:var(--gray);}
+.pm-name.done{color:var(--white);}
+.pm-status{font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;}
+.pm-status.done{color:var(--green);}
+.pm-status.active{color:var(--yellow);}
+.pm-status.lock{color:var(--gray2);}
+
+/* QUICK ACTIONS */
+.qa-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:0.8rem;margin-bottom:1.5rem;}
+.qa-card{background:var(--dark);border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:1.1rem;text-align:center;cursor:pointer;transition:all 0.2s;}
+.qa-card:hover{border-color:var(--yellow);transform:translateY(-3px);}
+.qa-icon{font-size:1.8rem;display:block;margin-bottom:0.5rem;}
+.qa-label{font-size:0.75rem;font-weight:700;color:var(--gray);}
+
+/* ANNOUNCEMENTS */
+.announce-list{display:flex;flex-direction:column;gap:0.8rem;}
+.announce-item{background:var(--dark);border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:1.1rem;display:flex;gap:1rem;align-items:flex-start;}
+.ann-icon{font-size:1.3rem;flex-shrink:0;}
+.ann-title{font-weight:700;font-size:0.85rem;margin-bottom:0.2rem;}
+.ann-body{color:var(--gray);font-size:0.78rem;line-height:1.5;}
+.ann-time{font-size:0.65rem;color:var(--gray2);margin-top:0.3rem;}
+.ann-badge{display:inline-block;background:rgba(250,204,21,0.1);border:1px solid rgba(250,204,21,0.25);color:var(--yellow);font-size:0.58rem;font-weight:700;padding:0.15rem 0.5rem;border-radius:2px;text-transform:uppercase;letter-spacing:0.1em;margin-left:0.5rem;}
+
+/* COURSE CONTENT */
+.module-list{display:flex;flex-direction:column;gap:0.8rem;}
+.module-item{background:var(--dark);border:1px solid rgba(255,255,255,0.07);border-radius:8px;overflow:hidden;}
+.module-header{padding:1.1rem 1.2rem;display:flex;align-items:center;gap:0.9rem;cursor:pointer;transition:background 0.2s;}
+.module-header:hover{background:rgba(255,255,255,0.03);}
+.mod-num{font-family:'Space Mono','Courier New',monospace;font-size:0.7rem;color:var(--yellow);font-weight:700;background:rgba(250,204,21,0.1);border:1px solid rgba(250,204,21,0.2);padding:0.2rem 0.5rem;border-radius:3px;flex-shrink:0;}
+.mod-title{flex:1;font-weight:700;font-size:0.88rem;}
+.mod-status{font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;padding:0.2rem 0.6rem;border-radius:2px;}
+.mod-status.done{background:rgba(34,197,94,0.1);color:var(--green);}
+.mod-status.active{background:rgba(250,204,21,0.1);color:var(--yellow);}
+.mod-status.lock{background:rgba(255,255,255,0.05);color:var(--gray2);}
+.mod-arrow{color:var(--gray2);font-size:0.8rem;transition:transform 0.2s;}
+.module-body{display:none;border-top:1px solid rgba(255,255,255,0.06);padding:1rem 1.2rem;}
+.module-body.open{display:block;}
+.lesson-list{display:flex;flex-direction:column;gap:0.5rem;}
+.lesson-item{display:flex;align-items:center;gap:0.8rem;padding:0.6rem 0.8rem;border-radius:5px;cursor:pointer;transition:background 0.2s;}
+.lesson-item:hover{background:rgba(255,255,255,0.04);}
+.lesson-icon{font-size:1rem;flex-shrink:0;}
+.lesson-name{flex:1;font-size:0.82rem;color:var(--gray);}
+.lesson-name.done{color:var(--white);}
+.lesson-dur{font-size:0.68rem;color:var(--gray2);}
+.lesson-check{font-size:0.8rem;color:var(--green);}
+
+/* PAYMENT */
+.payment-card{background:var(--dark);border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:1.5rem;margin-bottom:1.2rem;}
+.payment-card::before{content:'';display:block;height:3px;background:linear-gradient(90deg,var(--yellow),var(--green));margin:-1.5rem -1.5rem 1.2rem;border-radius:10px 10px 0 0;}
+.pc-title{font-family:'Bebas Neue',Impact,sans-serif;font-size:1.3rem;letter-spacing:0.04em;color:var(--yellow);margin-bottom:1rem;}
+.pc-row{display:flex;justify-content:space-between;align-items:center;padding:0.7rem 0;border-bottom:1px solid rgba(255,255,255,0.05);}
+.pc-row:last-child{border-bottom:none;}
+.pc-key{font-size:0.78rem;color:var(--gray);}
+.pc-val{font-size:0.85rem;color:var(--white);font-weight:700;}
+.pc-val.green{color:var(--green);}
+.pc-val.yellow{color:var(--yellow);}
+.status-pill{display:inline-flex;align-items:center;gap:5px;padding:0.3rem 0.8rem;border-radius:20px;font-size:0.72rem;font-weight:700;}
+.status-pill.paid{background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.3);color:var(--green);}
+.status-pill.pending{background:rgba(250,204,21,0.1);border:1px solid rgba(250,204,21,0.3);color:var(--yellow);}
+.invoice-btn{background:rgba(250,204,21,0.08);border:1px solid rgba(250,204,21,0.25);color:var(--yellow);padding:0.6rem 1.2rem;font-family:'Bebas Neue',Impact,sans-serif;font-size:0.95rem;letter-spacing:0.08em;border-radius:3px;cursor:pointer;transition:all 0.2s;}
+.invoice-btn:hover{background:rgba(250,204,21,0.15);}
+
+/* CERTIFICATE */
+.cert-card{background:var(--dark);border:2px solid var(--yellow);border-radius:10px;padding:2rem;text-align:center;position:relative;overflow:hidden;}
+.cert-card::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(250,204,21,0.04) 0%,transparent 70%);}
+.cert-title{font-family:'Bebas Neue',Impact,sans-serif;font-size:2rem;color:var(--yellow);letter-spacing:0.05em;margin-bottom:0.5rem;}
+.cert-locked{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:1.5rem;text-align:center;}
+.cert-locked-icon{font-size:2.5rem;display:block;margin-bottom:0.8rem;}
+.cert-locked-text{color:var(--gray);font-size:0.85rem;}
+.cert-progress-wrap{margin-top:1rem;}
+
+/* SUPPORT */
+.support-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem;}
+.support-card{background:var(--dark);border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:1.3rem;text-align:center;cursor:pointer;transition:all 0.2s;text-decoration:none;}
+.support-card:hover{border-color:var(--yellow);transform:translateY(-3px);}
+.sc2-icon{font-size:2rem;display:block;margin-bottom:0.7rem;}
+.sc2-title{font-weight:700;font-size:0.88rem;color:var(--white);margin-bottom:0.3rem;}
+.sc2-sub{color:var(--gray);font-size:0.75rem;}
+.faq-list{display:flex;flex-direction:column;gap:0.6rem;}
+.faq-item{background:var(--dark);border:1px solid rgba(255,255,255,0.07);border-radius:6px;overflow:hidden;}
+.faq-q{padding:1rem 1.1rem;display:flex;justify-content:space-between;align-items:center;cursor:pointer;font-size:0.85rem;font-weight:700;transition:background 0.2s;}
+.faq-q:hover{background:rgba(255,255,255,0.03);}
+.faq-a{display:none;padding:0 1.1rem 1rem;color:var(--gray);font-size:0.8rem;line-height:1.6;border-top:1px solid rgba(255,255,255,0.05);}
+.faq-a.open{display:block;}
+
+/* PROFILE */
+.profile-card{background:var(--dark);border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:1.8rem;margin-bottom:1.2rem;}
+.profile-top{display:flex;gap:1.5rem;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;}
+.profile-av{width:70px;height:70px;border-radius:50%;background:linear-gradient(135deg,var(--yellow),var(--green));display:flex;align-items:center;justify-content:center;font-size:2rem;flex-shrink:0;}
+.profile-name-big{font-family:'Bebas Neue',Impact,sans-serif;font-size:1.8rem;color:var(--yellow);letter-spacing:0.04em;line-height:1;}
+.profile-course-tag{font-size:0.68rem;color:var(--green);font-weight:700;letter-spacing:0.12em;text-transform:uppercase;margin-top:0.3rem;}
+.pf-row{display:flex;justify-content:space-between;align-items:center;padding:0.75rem 0;border-bottom:1px solid rgba(255,255,255,0.05);}
+.pf-row:last-child{border-bottom:none;}
+.pf-key{font-size:0.78rem;color:var(--gray);}
+.pf-val{font-size:0.85rem;color:var(--white);font-weight:600;}
+
+/* SECTION HEADERS */
+.page-section-title{font-family:'Bebas Neue',Impact,sans-serif;font-size:1.2rem;letter-spacing:0.04em;color:var(--white);margin-bottom:0.9rem;display:flex;align-items:center;gap:0.6rem;}
+.page-section-title::after{content:'';flex:1;height:1px;background:rgba(255,255,255,0.07);}
+
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%);}
+  .sidebar.mob-open{transform:translateX(0);}
+  .dash-main{margin-left:0;}
+  .hamburger-btn{display:block;}
+  .stats-grid{grid-template-columns:1fr 1fr;}
+  .support-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+<a href="#loginScreen" class="skip-link" style="position:absolute;left:-999px;top:0;background:var(--yellow);color:var(--black);padding:0.5rem 1rem;z-index:9999;border-radius:0 0 4px 0;font-weight:700;">Skip to content</a>
+
+<!-- LOADING OVERLAY (shown while Firebase initialises) -->
+<div id="appLoader" style="position:fixed;inset:0;background:var(--black);display:flex;align-items:center;justify-content:center;z-index:9000;flex-direction:column;gap:1.2rem;">
+  <div style="font-family:'Bebas Neue',Impact,sans-serif;font-size:2rem;color:var(--yellow);letter-spacing:0.08em;">Thrive Skill Tech</div>
+  <div style="width:38px;height:38px;border:3px solid rgba(250,204,21,0.15);border-top-color:var(--yellow);border-radius:50%;animation:spin 0.8s linear infinite;"></div>
+</div>
+
+<!-- LOGIN SCREEN -->
+<div id="loginScreen" style="display:none;">
+  <div class="login-box">
+    <div class="login-logo-area">
+      <div class="brand">Thrive Skill Tech</div>
+      <div class="sub">Student Portal</div>
+    </div>
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tabLogin" onclick="switchTab('login')">Sign In</button>
+      <button class="auth-tab" id="tabRegister" onclick="switchTab('register')">Register</button>
+    </div>
+
+    <!-- LOGIN PANEL -->
+    <div id="panelLogin">
+      <div class="auth-panel-title">Welcome Back</div>
+      <div class="auth-panel-sub">Sign in with your email and password</div>
+      <div class="lg"><label for="loginEmail">Email Address</label><input type="email" id="loginEmail" placeholder="you@email.com" autocomplete="email"/></div>
+      <div class="lg"><label for="loginPass">Password</label><input type="password" id="loginPass" placeholder="Enter your password" autocomplete="current-password"/></div>
+      <div style="text-align:right;margin-top:-0.5rem;margin-bottom:1rem;">
+        <span onclick="switchTab('forgot')" style="font-size:0.75rem;color:var(--yellow);cursor:pointer;font-weight:600;">Forgot Password?</span>
+      </div>
+      <button class="login-btn" id="loginBtn" onclick="doLogin()">Sign In to Dashboard</button>
+      <div class="login-err" id="loginErr"></div>
+      <div class="auth-switch">New student? <span onclick="switchTab('register')">Register here</span></div>
+    </div>
+
+    <!-- REGISTER PANEL -->
+    <div id="panelRegister" style="display:none;">
+      <div class="auth-panel-title">Create Account</div>
+      <div class="auth-panel-sub">Register to access your student dashboard</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.8rem;">
+        <div class="lg"><label>First Name *</label><input type="text" id="regFirst" placeholder="Rahul"/></div>
+        <div class="lg"><label>Last Name *</label><input type="text" id="regLast" placeholder="Patil"/></div>
+      </div>
+      <div class="lg"><label>Phone Number *</label><input type="tel" id="regPhone" placeholder="+91 98765 43210"/></div>
+      <div class="lg"><label>Email Address *</label><input type="email" id="regEmail" placeholder="you@email.com" autocomplete="email"/></div>
+      <div class="lg"><label>City *</label><input type="text" id="regCity" placeholder="Mumbai / Nagpur / Bhandara"/></div>
+      <div class="lg">
+        <label>Course Enrolled *</label>
+        <select id="regCourse">
+          <option value="">Select your course...</option>
+          <option value="CCSC">CCSC - Certified Content Strategy Course (Rs. 1,999)</option>
+          <option value="MCDM">MCDM - Master in Content Creation and Digital Marketing (Rs. 8,999)</option>
+        </select>
+      </div>
+      <div class="lg"><label>Payment ID (Optional)</label><input type="text" id="regPayId" placeholder="Razorpay payment ID or receipt number"/></div>
+      <div class="lg"><label>Create Password *</label><input type="password" id="regPass" placeholder="Min 6 characters" autocomplete="new-password"/></div>
+      <div class="lg"><label>Confirm Password *</label><input type="password" id="regPassConfirm" placeholder="Re-enter password" autocomplete="new-password"/></div>
+      <div class="reg-note">&#9888; After registration your account will be <strong>verified by our team</strong> within 24 hours. You will receive a confirmation on WhatsApp.</div>
+      <button class="login-btn" id="regBtn" onclick="doRegister()">Create My Account</button>
+      <div class="login-err" id="regErr"></div>
+      <div class="auth-switch">Already registered? <span onclick="switchTab('login')">Sign in here</span></div>
+    </div>
+
+    <!-- REGISTER SUCCESS PANEL -->
+    <div id="panelRegSuccess" style="display:none;">
+      <div style="text-align:center;padding:1rem 0;">
+        <div style="font-size:3.5rem;margin-bottom:1rem;">&#127881;</div>
+        <div style="font-family:'Bebas Neue',Impact,sans-serif;font-size:1.8rem;color:var(--green);letter-spacing:0.04em;margin-bottom:0.8rem;">Registration Successful!</div>
+        <div id="regSuccessName" style="color:var(--yellow);font-weight:700;font-size:1rem;margin-bottom:1rem;"></div>
+        <div style="background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.25);border-radius:8px;padding:1.2rem;margin-bottom:1.2rem;color:var(--green-l);font-size:0.84rem;line-height:1.65;">
+          Your account has been created!<br>Our team will verify and activate it within <strong>24 hours</strong>.<br>You will receive a confirmation on WhatsApp.
+        </div>
+        <a href="https://wa.me/918459612191?text=Hi%20I%20just%20registered%20on%20Thrive%20Skill%20Tech%20Student%20Portal" target="_blank" style="display:block;background:var(--green);color:var(--black);padding:0.85rem;font-family:'Bebas Neue',Impact,sans-serif;font-size:1rem;letter-spacing:0.1em;border-radius:4px;text-decoration:none;margin-bottom:0.7rem;">&#128172; Notify Us on WhatsApp</a>
+        <button onclick="switchTab('login')" class="login-btn" style="background:var(--dark);border:1px solid var(--bdr);color:var(--white);">Go to Login</button>
+      </div>
+    </div>
+
+    <!-- FORGOT PASSWORD PANEL -->
+    <div id="panelForgot" style="display:none;">
+      <div class="auth-panel-title">Reset Password</div>
+      <div class="auth-panel-sub">Enter your registered email — we'll send a reset link</div>
+      <div class="lg"><label for="forgotEmail">Email Address</label><input type="email" id="forgotEmail" placeholder="you@email.com" autocomplete="email"/></div>
+      <button class="login-btn" id="forgotBtn" onclick="doForgot()">Send Reset Email</button>
+      <div class="login-err" id="forgotErr"></div>
+      <div id="forgotResult" style="display:none;background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.25);border-radius:8px;padding:1.2rem;margin-top:1rem;font-size:0.84rem;color:var(--green-l);line-height:1.65;"></div>
+      <div class="auth-switch" style="margin-top:1rem;"><span onclick="switchTab('login')">&#8592; Back to Login</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboard">
+  <div class="dash-layout">
+    <div class="sidebar" id="sidebar">
+      <div class="sidebar-head">
+        <div class="sidebar-brand">Thrive Skill Tech</div>
+        <div class="sidebar-tag">Student Portal</div>
+      </div>
+      <div class="sidebar-user">
+        <div class="user-av">&#128100;</div>
+        <div>
+          <div class="user-name" id="sidebarName">Student</div>
+          <div class="user-course" id="sidebarCourse">Loading...</div>
+        </div>
+      </div>
+      <nav class="sidebar-nav">
+        <div class="nav-section-label">Main</div>
+        <div class="nav-item active" role="button" tabindex="0" aria-label="Overview" onclick="showPage('overview')"><span class="nav-icon">&#127968;</span>Overview</div>
+        <div class="nav-item" role="button" tabindex="0" aria-label="Course Content" onclick="showPage('courses')"><span class="nav-icon">&#127979;</span>Course Content</div>
+        <div class="nav-item" role="button" tabindex="0" aria-label="Assignments" onclick="showPage('assignments')"><span class="nav-icon">&#128196;</span>Assignments</div>
+        <div class="nav-section-label">Account</div>
+        <div class="nav-item" role="button" tabindex="0" aria-label="Payment Status" onclick="showPage('payment')"><span class="nav-icon">&#128176;</span>Payment Status</div>
+        <div class="nav-item" role="button" tabindex="0" aria-label="Certificate" onclick="showPage('certificate')"><span class="nav-icon">&#127891;</span>Certificate</div>
+        <div class="nav-section-label">Support</div>
+        <div class="nav-item" role="button" tabindex="0" aria-label="Help and Support" onclick="showPage('support')"><span class="nav-icon">&#128172;</span>Help &amp; Support</div>
+        <div class="nav-item" role="button" tabindex="0" aria-label="My Profile" onclick="showPage('profile')"><span class="nav-icon">&#128100;</span>My Profile</div>
+      </nav>
+      <div class="sidebar-bottom">
+        <button class="logout-btn" onclick="doLogout()" aria-label="Sign out">&#128682; Sign Out</button>
+      </div>
+    </div>
+
+    <div class="dash-main">
+      <div class="dash-topbar">
+        <div style="display:flex;align-items:center;gap:1rem;">
+          <button class="hamburger-btn" onclick="toggleSidebar()" aria-label="Toggle menu">&#9776;</button>
+          <div class="topbar-title" id="pageTitle">Overview</div>
+        </div>
+        <div class="topbar-right">
+          <div class="notif-btn" aria-label="Notifications">&#128276;<span class="notif-dot"></span></div>
+          <div style="font-size:0.75rem;color:var(--gray);" id="topbarName">Student</div>
+        </div>
+      </div>
+
+      <!-- OVERVIEW PAGE -->
+      <div class="dash-page active" id="page-overview">
+        <div class="welcome-banner">
+          <div class="wb-title" id="wbTitle">Welcome Back!</div>
+          <div class="wb-sub">Here is your learning progress at Thrive Skill Tech</div>
+          <div class="wb-course" id="wbCourse">Loading course...</div>
+        </div>
+        <div class="stats-grid">
+          <div class="stat-card yellow"><div class="sc-icon">&#128218;</div><div class="sc-val" id="statModules">0</div><div class="sc-label">Modules Total</div></div>
+          <div class="stat-card green"><div class="sc-icon">&#9989;</div><div class="sc-val" id="statCompleted">0</div><div class="sc-label">Completed</div></div>
+          <div class="stat-card blue"><div class="sc-icon">&#128336;</div><div class="sc-val" id="statDays">0</div><div class="sc-label">Days Left</div></div>
+          <div class="stat-card orange"><div class="sc-icon">&#127941;</div><div class="sc-val" id="statAssign">0</div><div class="sc-label">Assignments</div></div>
+        </div>
+        <div class="progress-section">
+          <div class="ps-header"><div class="ps-title">Course Progress</div><div class="ps-pct" id="progressPct">0%</div></div>
+          <div class="pbar-bg"><div class="pbar-fill" id="progressBar" style="width:0%"></div></div>
+          <div class="ps-modules" id="progressModules"></div>
+        </div>
+        <div class="page-section-title">Quick Actions</div>
+        <div class="qa-grid">
+          <div class="qa-card" role="button" tabindex="0" aria-label="Continue Learning" onclick="showPage('courses')"><span class="qa-icon">&#127979;</span><div class="qa-label">Continue Learning</div></div>
+          <div class="qa-card" role="button" tabindex="0" aria-label="View Assignments" onclick="showPage('assignments')"><span class="qa-icon">&#128196;</span><div class="qa-label">View Assignments</div></div>
+          <div class="qa-card" role="button" tabindex="0" aria-label="Payment Status" onclick="showPage('payment')"><span class="qa-icon">&#128176;</span><div class="qa-label">Payment Status</div></div>
+          <div class="qa-card" role="button" tabindex="0" aria-label="My Certificate" onclick="showPage('certificate')"><span class="qa-icon">&#127891;</span><div class="qa-label">My Certificate</div></div>
+          <div class="qa-card" role="button" tabindex="0" aria-label="Join WhatsApp Group" onclick="window.open('https://chat.whatsapp.com/GCAsBKHGHEM9vgHDfxuLAM','_blank')"><span class="qa-icon">&#128172;</span><div class="qa-label">WhatsApp Group</div></div>
+          <div class="qa-card" role="button" tabindex="0" aria-label="Contact Mentor" onclick="showPage('support')"><span class="qa-icon">&#128222;</span><div class="qa-label">Contact Mentor</div></div>
+        </div>
+        <div class="page-section-title">Announcements</div>
+        <div class="announce-list">
+          <div class="announce-item"><span class="ann-icon">&#128227;</span><div><div class="ann-title">Live Session This Weekend <span class="ann-badge">New</span></div><div class="ann-body">Join Tej Pawar for a live Q&amp;A session on Instagram Growth Strategies. Link will be shared on WhatsApp group.</div><div class="ann-time">2 May 2026</div></div></div>
+          <div class="announce-item"><span class="ann-icon">&#127775;</span><div><div class="ann-title">New Module Unlocked</div><div class="ann-body">Module 5 - Video Creation Skills is now available. Check your course content section to start learning.</div><div class="ann-time">1 May 2026</div></div></div>
+          <div class="announce-item"><span class="ann-icon">&#128176;</span><div><div class="ann-title">Assignment Submission Reminder</div><div class="ann-body">Please submit your Module 3 assignment by this Friday. Submit via WhatsApp to your mentor.</div><div class="ann-time">30 Apr 2026</div></div></div>
+        </div>
+      </div>
+
+      <div class="dash-page" id="page-courses"><div class="page-section-title">Course Modules</div><div class="module-list" id="moduleList"></div></div>
+      <div class="dash-page" id="page-assignments"><div class="page-section-title">Assignments</div><div id="assignmentList"></div></div>
+
+      <div class="dash-page" id="page-payment">
+        <div class="page-section-title">Payment Status</div>
+        <div class="payment-card">
+          <div class="pc-title">Enrollment Details</div>
+          <div class="pc-row"><div class="pc-key">Student Name</div><div class="pc-val" id="payName">-</div></div>
+          <div class="pc-row"><div class="pc-key">Course Enrolled</div><div class="pc-val yellow" id="payCourse">-</div></div>
+          <div class="pc-row"><div class="pc-key">Enrollment Date</div><div class="pc-val" id="payDate">-</div></div>
+          <div class="pc-row"><div class="pc-key">Course Duration</div><div class="pc-val" id="payDuration">-</div></div>
+          <div class="pc-row"><div class="pc-key">Course Fee</div><div class="pc-val yellow" id="payFee">-</div></div>
+          <div class="pc-row"><div class="pc-key">Amount Paid</div><div class="pc-val green" id="payPaid">-</div></div>
+          <div class="pc-row"><div class="pc-key">Balance Due</div><div class="pc-val" id="payBalance">-</div></div>
+          <div class="pc-row"><div class="pc-key">Payment Status</div><div id="payStatus">-</div></div>
+          <div class="pc-row"><div class="pc-key">Payment Method</div><div class="pc-val" id="payMethod">-</div></div>
+        </div>
+        <div style="display:flex;gap:0.8rem;flex-wrap:wrap;">
+          <button class="invoice-btn" onclick="downloadInvoice()">&#128196; Download Receipt</button>
+          <a href="https://wa.me/918459612191" target="_blank" class="invoice-btn" style="text-decoration:none;">&#128172; Payment Query</a>
+        </div>
+      </div>
+
+      <div class="dash-page" id="page-certificate"><div class="page-section-title">My Certificate</div><div id="certSection"></div></div>
+
+      <div class="dash-page" id="page-support">
+        <div class="page-section-title">Help &amp; Support</div>
+        <div class="support-grid">
+          <a href="https://wa.me/918459612191" target="_blank" class="support-card"><span class="sc2-icon">&#128172;</span><div class="sc2-title">WhatsApp Mentor</div><div class="sc2-sub">Chat with Tej Pawar directly</div></a>
+          <a href="tel:+918459612191" class="support-card"><span class="sc2-icon">&#128222;</span><div class="sc2-title">Call Us</div><div class="sc2-sub">+91 84596 12191</div></a>
+          <a href="mailto:tst@thriveskilltech.com" class="support-card"><span class="sc2-icon">&#128231;</span><div class="sc2-title">Email Support</div><div class="sc2-sub">tst@thriveskilltech.com</div></a>
+          <a href="https://chat.whatsapp.com/GCAsBKHGHEM9vgHDfxuLAM" target="_blank" class="support-card"><span class="sc2-icon">&#128101;</span><div class="sc2-title">Student Community</div><div class="sc2-sub">Join the WhatsApp group</div></a>
+        </div>
+        <div class="page-section-title">Frequently Asked Questions</div>
+        <div class="faq-list">
+          <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>How do I access my course content?</span><span>+</span></div><div class="faq-a">All course content is available in the Course Content section of this dashboard. Click on any module to expand and view lessons.</div></div>
+          <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>When will I get my certificate?</span><span>+</span></div><div class="faq-a">Certificates are issued after completing all modules and assignments. For MCDM students, the internship certificate is issued after completing the 1-month internship.</div></div>
+          <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>How do I submit assignments?</span><span>+</span></div><div class="faq-a">Submit assignments directly to your mentor Tej Pawar on WhatsApp: +91 84596 12191. Include your name and module number.</div></div>
+          <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>Can I get a refund?</span><span>+</span></div><div class="faq-a">Please contact us within 3 days of enrollment for refund queries. Email tst@thriveskilltech.com or call +91 84596 12191.</div></div>
+          <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>How do I join the internship?</span><span>+</span></div><div class="faq-a">Internship details are shared after completing the main course modules. Your mentor will guide you on the process via WhatsApp.</div></div>
+        </div>
+      </div>
+
+      <div class="dash-page" id="page-profile">
+        <div class="page-section-title">My Profile</div>
+        <div class="profile-card">
+          <div class="profile-top">
+            <div class="profile-av">&#128100;</div>
+            <div>
+              <div class="profile-name-big" id="profName">Student Name</div>
+              <div class="profile-course-tag" id="profCourse">Course Name</div>
+            </div>
+          </div>
+          <div class="pf-row"><div class="pf-key">Full Name</div><div class="pf-val" id="pf-name">-</div></div>
+          <div class="pf-row"><div class="pf-key">Phone Number</div><div class="pf-val" id="pf-phone">-</div></div>
+          <div class="pf-row"><div class="pf-key">Email Address</div><div class="pf-val" id="pf-email">-</div></div>
+          <div class="pf-row"><div class="pf-key">City</div><div class="pf-val" id="pf-city">-</div></div>
+          <div class="pf-row"><div class="pf-key">Course</div><div class="pf-val" id="pf-course">-</div></div>
+          <div class="pf-row"><div class="pf-key">Enrollment Date</div><div class="pf-val" id="pf-date">-</div></div>
+          <div class="pf-row"><div class="pf-key">Student ID</div><div class="pf-val" id="pf-id">-</div></div>
+          <div class="pf-row"><div class="pf-key">Mentor</div><div class="pf-val">Tej Shrikant Pawar</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     FIREBASE SDK  (loaded from Google CDN — no install needed)
+     ═══════════════════════════════════════════════════════════ -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
+         sendPasswordResetEmail, signOut, onAuthStateChanged }
+  from "https://www.gstatic.com/firebasejs/11.7.1/firebase-auth.js";
+import { getFirestore, doc, setDoc, getDoc, serverTimestamp }
+  from "https://www.gstatic.com/firebasejs/11.7.1/firebase-firestore.js";
+
+// ─── YOUR FIREBASE CONFIG ────────────────────────────────────
+const firebaseConfig = {
+  apiKey: "AIzaSyAJAGCe6wIhP9T2rQ6gqTMD_romsjI5RFA",
+  authDomain: "thrive-skill-tech.firebaseapp.com",
+  projectId: "thrive-skill-tech",
+  storageBucket: "thrive-skill-tech.firebasestorage.app",
+  messagingSenderId: "969286367743",
+  appId: "1:969286367743:web:2e31930f37afc3fdcacfca",
+  measurementId: "G-9RV5S5VCDF"
+};
+// ─────────────────────────────────────────────────────────────
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+// ─── HELPERS ─────────────────────────────────────────────────
+function el(id) { return document.getElementById(id); }
+function setText(id, val) { const e = el(id); if (e) e.textContent = val; }
+function showErr(id, msg) { const e = el(id); if (e) { e.textContent = msg; e.style.display = "block"; } }
+function hideErr(id) { const e = el(id); if (e) e.style.display = "none"; }
+function setLoading(btnId, loading) {
+  const b = el(btnId);
+  if (!b) return;
+  b.disabled = loading;
+  b.textContent = loading ? "Please wait..." : b.getAttribute("data-label") || b.textContent;
+}
+
+let currentStudent = null;
+
+// ─── APP INIT: Firebase auth state listener ───────────────────
+onAuthStateChanged(auth, async (user) => {
+  el("appLoader").style.display = "none";
+  if (user) {
+    // User is already logged in — fetch their data and go to dashboard
+    try {
+      const snap = await getDoc(doc(db, "students", user.uid));
+      if (snap.exists()) {
+        const data = snap.data();
+        if (data.status === "suspended") {
+          await signOut(auth);
+          el("loginScreen").style.display = "flex";
+          showErr("loginErr", "Your account has been suspended. Contact +91 84596 12191.");
+          return;
+        }
+        currentStudent = { uid: user.uid, ...data };
+        el("loginScreen").style.display = "none";
+        el("dashboard").style.display = "block";
+        loadDashboard();
+      } else {
+        // Firestore doc missing — show login
+        el("loginScreen").style.display = "flex";
+      }
+    } catch (e) {
+      el("loginScreen").style.display = "flex";
+      showErr("loginErr", "Failed to load your data. Please try again.");
+    }
+  } else {
+    el("loginScreen").style.display = "flex";
+  }
+});
+
+// ─── AUTH TAB SWITCHER ────────────────────────────────────────
+window.switchTab = function(tab) {
+  ["panelLogin","panelRegister","panelRegSuccess","panelForgot"].forEach(id => {
+    el(id).style.display = "none";
+  });
+  ["loginErr","regErr","forgotErr"].forEach(id => hideErr(id));
+  el("forgotResult").style.display = "none";
+  el("tabLogin").classList.remove("active");
+  el("tabRegister").classList.remove("active");
+  const map = { login:"panelLogin", register:"panelRegister", regSuccess:"panelRegSuccess", forgot:"panelForgot" };
+  if (map[tab]) el(map[tab]).style.display = "block";
+  if (tab === "login" || tab === "forgot") el("tabLogin").classList.add("active");
+  else el("tabRegister").classList.add("active");
+};
+
+// ─── LOGIN ────────────────────────────────────────────────────
+window.doLogin = async function() {
+  const email = el("loginEmail").value.trim();
+  const pass = el("loginPass").value;
+  hideErr("loginErr");
+  if (!email || !pass) { showErr("loginErr", "Please enter your email and password."); return; }
+  el("loginBtn").disabled = true;
+  el("loginBtn").textContent = "Signing in...";
+  try {
+    const cred = await signInWithEmailAndPassword(auth, email, pass);
+    const snap = await getDoc(doc(db, "students", cred.user.uid));
+    if (!snap.exists()) { showErr("loginErr", "Account data not found. Please contact support."); return; }
+    const data = snap.data();
+    if (data.status === "pending") {
+      await signOut(auth);
+      showErr("loginErr", "Account pending verification. Our team will activate it within 24 hours. Contact: +91 84596 12191");
+      return;
+    }
+    if (data.status === "suspended") {
+      await signOut(auth);
+      showErr("loginErr", "Account suspended. Contact +91 84596 12191 for help.");
+      return;
+    }
+    currentStudent = { uid: cred.user.uid, ...data };
+    el("loginScreen").style.display = "none";
+    el("dashboard").style.display = "block";
+    loadDashboard();
+  } catch (e) {
+    const msgs = {
+      "auth/user-not-found": "No account found with this email. Please register first.",
+      "auth/wrong-password": "Incorrect password. Please try again.",
+      "auth/invalid-email": "Please enter a valid email address.",
+      "auth/too-many-requests": "Too many failed attempts. Please try again later.",
+      "auth/invalid-credential": "Incorrect email or password. Please try again."
+    };
+    showErr("loginErr", msgs[e.code] || "Login failed: " + e.message);
+  } finally {
+    el("loginBtn").disabled = false;
+    el("loginBtn").textContent = "Sign In to Dashboard";
+  }
+};
+
+// ─── REGISTER ────────────────────────────────────────────────
+window.doRegister = async function() {
+  const first = el("regFirst").value.trim();
+  const last = el("regLast").value.trim();
+  const phone = el("regPhone").value.replace(/[^0-9]/g, "").slice(-10);
+  const email = el("regEmail").value.trim().toLowerCase();
+  const city = el("regCity").value.trim();
+  const course = el("regCourse").value;
+  const payId = el("regPayId").value.trim();
+  const pass = el("regPass").value;
+  const passConfirm = el("regPassConfirm").value;
+  hideErr("regErr");
+
+  if (!first || !last || !phone || !email || !city || !course || !pass) {
+    showErr("regErr", "Please fill all required fields."); return;
+  }
+  if (!/^[6-9][0-9]{9}$/.test(phone)) {
+    showErr("regErr", "Please enter a valid Indian mobile number (starting with 6–9)."); return;
+  }
+  if (!/^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/.test(email)) {
+    showErr("regErr", "Please enter a valid email address."); return;
+  }
+  if (pass.length < 6) { showErr("regErr", "Password must be at least 6 characters."); return; }
+  if (pass !== passConfirm) { showErr("regErr", "Passwords do not match."); return; }
+
+  el("regBtn").disabled = true;
+  el("regBtn").textContent = "Creating account...";
+
+  try {
+    const cred = await createUserWithEmailAndPassword(auth, email, pass);
+    const uid = cred.user.uid;
+    const courseFullNames = { CCSC: "Certified Content Strategy Course", MCDM: "Master in Content Creation and Digital Marketing" };
+    const courseDurations = { CCSC: "7 Days", MCDM: "2 Months + 1 Month Internship" };
+    const courseFees = { CCSC: 1999, MCDM: 8999 };
+    const dateStr = new Date().toLocaleDateString("en-IN");
+    // Generate a simple student ID using timestamp
+    const shortTs = Date.now().toString().slice(-5);
+    const newId = "TST-" + course + "-" + shortTs;
+
+    const studentDoc = {
+      id: newId, name: first + " " + last, first, last,
+      phone, email, city,
+      course, courseFull: courseFullNames[course],
+      enrollDate: dateStr, duration: courseDurations[course],
+      fee: courseFees[course],
+      paid: payId ? courseFees[course] : 0,
+      payMethod: payId ? "Online" : "Pending",
+      payId: payId || "Pending",
+      progress: 0, completedModules: 0,
+      totalModules: course === "CCSC" ? 7 : 20,
+      daysLeft: course === "CCSC" ? 7 : 60,
+      assignments: 0,
+      status: "pending",
+      certificateUrl: "",
+      certificateIssuedDate: "",
+      createdAt: serverTimestamp()
+    };
+
+    await setDoc(doc(db, "students", uid), studentDoc);
+    // Sign out immediately — they need admin approval first
+    await signOut(auth);
+
+    el("regSuccessName").textContent = "Welcome, " + first + " " + last + "!";
+    switchTab("regSuccess");
+  } catch (e) {
+    const msgs = {
+      "auth/email-already-in-use": "This email is already registered. Please sign in instead.",
+      "auth/invalid-email": "Please enter a valid email address.",
+      "auth/weak-password": "Password is too weak. Use at least 6 characters."
+    };
+    showErr("regErr", msgs[e.code] || "Registration failed: " + e.message);
+  } finally {
+    el("regBtn").disabled = false;
+    el("regBtn").textContent = "Create My Account";
+  }
+};
+
+// ─── FORGOT PASSWORD (Firebase sends the email automatically) ─
+window.doForgot = async function() {
+  const email = el("forgotEmail").value.trim();
+  hideErr("forgotErr");
+  el("forgotResult").style.display = "none";
+  if (!email) { showErr("forgotErr", "Please enter your email address."); return; }
+  el("forgotBtn").disabled = true;
+  el("forgotBtn").textContent = "Sending...";
+  try {
+    await sendPasswordResetEmail(auth, email);
+    el("forgotResult").style.display = "block";
+    el("forgotResult").textContent = "Password reset email sent to " + email + ". Check your inbox (and spam folder).";
+  } catch (e) {
+    const msgs = {
+      "auth/user-not-found": "No account found with this email.",
+      "auth/invalid-email": "Please enter a valid email address."
+    };
+    showErr("forgotErr", msgs[e.code] || "Failed to send reset email.");
+  } finally {
+    el("forgotBtn").disabled = false;
+    el("forgotBtn").textContent = "Send Reset Email";
+  }
+};
+
+// ─── LOGOUT ───────────────────────────────────────────────────
+window.doLogout = async function() {
+  await signOut(auth);
+  currentStudent = null;
+  el("dashboard").style.display = "none";
+  el("loginScreen").style.display = "flex";
+  el("loginEmail").value = "";
+  el("loginPass").value = "";
+  switchTab("login");
+};
+
+// ─── MODULE DATA ──────────────────────────────────────────────
+const ccscModules = [
+  {num:"01",title:"Introduction to Content Creation",status:"done",lessons:[{name:"What is Content Creation?",dur:"15 min",done:true},{name:"Types of Content",dur:"12 min",done:true},{name:"Platform Overview",dur:"10 min",done:true}]},
+  {num:"02",title:"Niche Selection and Personal Branding",status:"done",lessons:[{name:"Choosing Your Niche",dur:"18 min",done:true},{name:"Personal Branding Basics",dur:"14 min",done:true}]},
+  {num:"03",title:"Content Strategy",status:"done",lessons:[{name:"Identifying Your Audience",dur:"16 min",done:true},{name:"Content Calendar",dur:"12 min",done:true},{name:"Viral vs Value Content",dur:"15 min",done:true}]},
+  {num:"04",title:"Content Ideas and Script Writing",status:"done",lessons:[{name:"Creating Strong Hooks",dur:"20 min",done:true},{name:"Storytelling Techniques",dur:"18 min",done:true}]},
+  {num:"05",title:"Monetization Strategies",status:"active",lessons:[{name:"Brand Deals Overview",dur:"22 min",done:false},{name:"Affiliate Marketing",dur:"18 min",done:false},{name:"Selling Your Services",dur:"15 min",done:false}]},
+  {num:"06",title:"Growth Strategies",status:"lock",lessons:[{name:"Organic Growth Tactics",dur:"20 min",done:false},{name:"Hashtag Strategy",dur:"12 min",done:false}]},
+  {num:"07",title:"Practical Assignment and Assessment",status:"lock",lessons:[{name:"Final Assignment",dur:"60 min",done:false},{name:"Assessment Quiz",dur:"20 min",done:false}]}
+];
+const mcdmModules = [
+  {num:"01",title:"Introduction to Content Creation",status:"done",lessons:[{name:"What is Content Creation?",dur:"15 min",done:true},{name:"Types: Reels, YouTube, Blogs",dur:"18 min",done:true}]},
+  {num:"02",title:"Niche Selection",status:"done",lessons:[{name:"Choosing Your Niche",dur:"20 min",done:true},{name:"Popular Niches Deep Dive",dur:"15 min",done:true}]},
+  {num:"03",title:"Content Strategy",status:"done",lessons:[{name:"Target Audience",dur:"18 min",done:true},{name:"Content Calendar",dur:"14 min",done:true}]},
+  {num:"04",title:"Content Ideas and Script Writing",status:"done",lessons:[{name:"Hook Writing",dur:"22 min",done:true},{name:"Storytelling",dur:"18 min",done:true}]},
+  {num:"05",title:"Video Creation Skills",status:"done",lessons:[{name:"Phone Shooting Techniques",dur:"25 min",done:true},{name:"Lighting and Angles",dur:"20 min",done:true},{name:"Audio Quality",dur:"15 min",done:true}]},
+  {num:"06",title:"Editing Skills - CapCut and Premiere",status:"done",lessons:[{name:"CapCut Basics",dur:"30 min",done:true},{name:"VN Editor",dur:"25 min",done:true},{name:"Premiere Pro Intro",dur:"35 min",done:true}]},
+  {num:"07",title:"Understanding Algorithms",status:"done",lessons:[{name:"Instagram Algorithm",dur:"22 min",done:true},{name:"YouTube SEO",dur:"28 min",done:true}]},
+  {num:"08",title:"Growth Strategies",status:"active",lessons:[{name:"Organic Growth",dur:"25 min",done:false},{name:"Hashtag Strategies",dur:"18 min",done:false},{name:"Collaborations",dur:"15 min",done:false}]},
+  {num:"09",title:"Monetization",status:"lock",lessons:[{name:"Brand Deals",dur:"25 min",done:false},{name:"Affiliate Marketing",dur:"20 min",done:false},{name:"YouTube Ads",dur:"18 min",done:false}]},
+  {num:"10",title:"Personal Branding",status:"lock",lessons:[{name:"Building Unique Identity",dur:"22 min",done:false},{name:"Profile Optimization",dur:"18 min",done:false}]},
+  {num:"11-20",title:"Advanced Modules - Unlocking Soon",status:"lock",lessons:[{name:"Digital Marketing, SMM, SEO, Ads and More",dur:"Coming Soon",done:false}]}
+];
+const ccscAssignments = [
+  {title:"Module 1 - Platform Research",desc:"Research and compare Instagram, YouTube and Facebook. Write a 1-page summary.",due:"28 Apr 2026",status:"submitted"},
+  {title:"Module 3 - Content Calendar",desc:"Create a 7-day content calendar for your chosen niche.",due:"2 May 2026",status:"submitted"},
+  {title:"Module 5 - Monetization Plan",desc:"Write a monetization strategy for your content channel.",due:"7 May 2026",status:"pending"}
+];
+const mcdmAssignments = [
+  {title:"Module 1 - Platform Analysis",desc:"Analyse Instagram, YouTube and Facebook. Write a detailed report.",due:"8 Apr 2026",status:"submitted"},
+  {title:"Module 3 - Content Calendar",desc:"Create a 30-day content calendar for your niche.",due:"14 Apr 2026",status:"submitted"},
+  {title:"Module 5 - Record a 60-sec Reel",desc:"Shoot and edit a 60-second Reel on any topic using your phone.",due:"20 Apr 2026",status:"submitted"},
+  {title:"Module 6 - Edited Video Submission",desc:"Edit a 3-minute video using CapCut with subtitles and transitions.",due:"26 Apr 2026",status:"submitted"},
+  {title:"Module 7 - SEO Audit",desc:"Do a basic SEO audit of 3 YouTube channels. Submit screenshots.",due:"30 Apr 2026",status:"submitted"},
+  {title:"Module 8 - Growth Strategy",desc:"Write a 2-page organic growth strategy for an Instagram page.",due:"7 May 2026",status:"pending"},
+  {title:"Module 9 - Monetization Plan",desc:"Create a full monetization roadmap for your content brand.",due:"14 May 2026",status:"pending"},
+  {title:"Final Project",desc:"Create a full content campaign from scratch. Present to mentor.",due:"15 Jun 2026",status:"pending"}
+];
+
+// ─── LOAD DASHBOARD ───────────────────────────────────────────
+function loadDashboard() {
+  const s = currentStudent;
+  setText("sidebarName", s.name);
+  setText("sidebarCourse", s.course);
+  setText("topbarName", s.name);
+  setText("wbTitle", "Welcome Back, " + s.first + "!");
+  setText("wbCourse", s.courseFull);
+  setText("statModules", s.totalModules);
+  setText("statCompleted", s.completedModules);
+  setText("statDays", s.daysLeft);
+  setText("statAssign", s.assignments);
+  setText("progressPct", s.progress + "%");
+  el("progressBar").style.width = s.progress + "%";
+
+  const mods = s.course === "CCSC" ? ccscModules : mcdmModules;
+  const pml = el("progressModules");
+  pml.innerHTML = "";
+  for (let i = 0; i < 5 && i < mods.length; i++) {
+    const m = mods[i];
+    const row = document.createElement("div"); row.className = "pm-item";
+    const dot = document.createElement("div"); dot.className = "pm-dot " + m.status;
+    const nm = document.createElement("div"); nm.className = m.status === "done" ? "pm-name done" : "pm-name";
+    nm.textContent = "Module " + m.num + " - " + m.title;
+    const st = document.createElement("div"); st.className = "pm-status " + m.status;
+    st.textContent = m.status === "done" ? "Done" : m.status === "active" ? "In Progress" : "Locked";
+    row.appendChild(dot); row.appendChild(nm); row.appendChild(st);
+    pml.appendChild(row);
+  }
+
+  setText("payName", s.name);
+  setText("payCourse", s.courseFull);
+  setText("payDate", s.enrollDate);
+  setText("payDuration", s.duration);
+  setText("payFee", "Rs. " + s.fee.toLocaleString("en-IN"));
+  setText("payPaid", "Rs. " + s.paid.toLocaleString("en-IN"));
+  const bal = s.fee - s.paid;
+  setText("payBalance", bal === 0 ? "Rs. 0 — Cleared" : "Rs. " + bal.toLocaleString("en-IN"));
+  setText("payMethod", s.payMethod);
+  const sp = el("payStatus"); sp.innerHTML = "";
+  const pill = document.createElement("span");
+  pill.className = bal === 0 ? "status-pill paid" : "status-pill pending";
+  pill.textContent = bal === 0 ? "Paid in Full" : "Partially Paid";
+  sp.appendChild(pill);
+
+  setText("profName", s.name);
+  setText("profCourse", s.courseFull);
+  setText("pf-name", s.name);
+  setText("pf-phone", "+91 " + s.phone);
+  setText("pf-email", s.email);
+  setText("pf-city", s.city);
+  setText("pf-course", s.courseFull);
+  setText("pf-date", s.enrollDate);
+  setText("pf-id", s.id);
+
+  buildModules();
+  buildAssignments();
+  buildCertificate();
+}
+
+// ─── BUILD MODULES ────────────────────────────────────────────
+function buildModules() {
+  const mods = currentStudent.course === "CCSC" ? ccscModules : mcdmModules;
+  const list = el("moduleList"); list.innerHTML = "";
+  mods.forEach((m, i) => {
+    const stLabel = m.status === "done" ? "Done" : m.status === "active" ? "Active" : "Locked";
+    const item = document.createElement("div"); item.className = "module-item";
+    const hdr = document.createElement("div"); hdr.className = "module-header";
+    hdr.setAttribute("onclick", "toggleModule(" + i + ")");
+    hdr.setAttribute("role", "button"); hdr.setAttribute("tabindex", "0");
+    hdr.setAttribute("aria-label", "Toggle Module " + m.num + " - " + m.title);
+    const numSp = document.createElement("span"); numSp.className = "mod-num"; numSp.textContent = "MOD " + m.num;
+    const titleSp = document.createElement("span"); titleSp.className = "mod-title"; titleSp.textContent = m.title;
+    const stSp = document.createElement("span"); stSp.className = "mod-status " + m.status; stSp.textContent = stLabel;
+    const arrowSp = document.createElement("span"); arrowSp.className = "mod-arrow"; arrowSp.id = "marrow-" + i; arrowSp.innerHTML = "&#9660;";
+    hdr.appendChild(numSp); hdr.appendChild(titleSp); hdr.appendChild(stSp); hdr.appendChild(arrowSp);
+    const body = document.createElement("div"); body.className = "module-body"; body.id = "mbody-" + i;
+    const ll = document.createElement("div"); ll.className = "lesson-list";
+    m.lessons.forEach(l => {
+      const lr = document.createElement("div"); lr.className = "lesson-item";
+      const li2 = document.createElement("span"); li2.className = "lesson-icon"; li2.innerHTML = l.done ? "&#9989;" : "&#9654;";
+      const ln = document.createElement("span"); ln.className = l.done ? "lesson-name done" : "lesson-name"; ln.textContent = l.name;
+      const ld = document.createElement("span"); ld.className = "lesson-dur"; ld.textContent = l.dur;
+      lr.appendChild(li2); lr.appendChild(ln); lr.appendChild(ld);
+      if (l.done) { const ck = document.createElement("span"); ck.className = "lesson-check"; ck.innerHTML = "&#10003;"; lr.appendChild(ck); }
+      ll.appendChild(lr);
+    });
+    body.appendChild(ll); item.appendChild(hdr); item.appendChild(body);
+    list.appendChild(item);
+  });
+}
+
+window.toggleModule = function(i) {
+  const body = el("mbody-" + i); const arrow = el("marrow-" + i);
+  body.classList.toggle("open");
+  arrow.style.transform = body.classList.contains("open") ? "rotate(180deg)" : "rotate(0deg)";
+};
+
+// ─── BUILD ASSIGNMENTS ────────────────────────────────────────
+function buildAssignments() {
+  const assigns = currentStudent.course === "CCSC" ? ccscAssignments : mcdmAssignments;
+  const list = el("assignmentList"); list.innerHTML = "";
+  assigns.forEach(a => {
+    const card = document.createElement("div");
+    card.style.cssText = "background:var(--dark);border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:1.2rem;margin-bottom:0.8rem;";
+    const top = document.createElement("div");
+    top.style.cssText = "display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.6rem;";
+    const td = document.createElement("div"); td.style.cssText = "font-weight:700;font-size:0.88rem;color:var(--white);"; td.textContent = a.title;
+    const badge = document.createElement("span");
+    badge.className = a.status === "submitted" ? "status-pill paid" : "status-pill pending";
+    badge.textContent = a.status === "submitted" ? "Submitted" : "Pending";
+    top.appendChild(td); top.appendChild(badge);
+    const desc = document.createElement("div"); desc.style.cssText = "color:var(--gray);font-size:0.8rem;line-height:1.55;margin-bottom:0.6rem;"; desc.textContent = a.desc;
+    const due = document.createElement("div"); due.style.cssText = "font-size:0.7rem;color:var(--gray2);"; due.textContent = "Due: " + a.due;
+    card.appendChild(top); card.appendChild(desc); card.appendChild(due);
+    if (a.status === "pending") {
+      const sw = document.createElement("div"); sw.style.marginTop = "0.8rem";
+      const sl = document.createElement("a"); sl.href = "https://wa.me/918459612191"; sl.target = "_blank";
+      sl.style.cssText = "background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.25);color:var(--green);padding:0.4rem 0.9rem;font-size:0.75rem;font-weight:700;border-radius:3px;text-decoration:none;";
+      sl.textContent = "Submit via WhatsApp"; sw.appendChild(sl); card.appendChild(sw);
+    }
+    list.appendChild(card);
+  });
+}
+
+// ─── BUILD CERTIFICATE ────────────────────────────────────────
+function buildCertificate() {
+  const s = currentStudent; const certDiv = el("certSection"); certDiv.innerHTML = "";
+  if (s.certificateUrl) {
+    const box = document.createElement("div"); box.className = "cert-card";
+    box.innerHTML = `<div style="font-size:2.5rem;margin-bottom:0.8rem;">&#127881;&#127942;&#127881;</div>
+      <div class="cert-title">Certificate Ready!</div>
+      <div style="font-size:1.1rem;color:var(--white);font-weight:700;margin-bottom:0.3rem;">${s.name}</div>
+      <div style="color:var(--gray);font-size:0.85rem;margin-bottom:0.3rem;">Has successfully completed</div>
+      <div style="font-size:1rem;color:var(--yellow);margin-bottom:1.5rem;font-weight:700;">${s.courseFull}</div>
+      <div style="font-size:0.75rem;color:var(--gray);margin-bottom:1.5rem;">Issued on: ${s.certificateIssuedDate || s.enrollDate}</div>
+      <a href="${s.certificateUrl}" target="_blank" style="display:block;background:var(--yellow);color:var(--black);padding:1rem;font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:0.1em;border-radius:4px;text-decoration:none;text-align:center;margin-bottom:0.7rem;" aria-label="Download your certificate">&#11015; Download Certificate</a>
+      <a href="https://wa.me/?text=${encodeURIComponent("I just completed " + s.courseFull + " at Thrive Skill Tech!")}" target="_blank" style="display:block;background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.3);color:var(--green);padding:0.8rem;font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:0.08em;border-radius:4px;text-decoration:none;text-align:center;" aria-label="Share certificate on WhatsApp">&#128172; Share on WhatsApp</a>`;
+    certDiv.appendChild(box);
+  } else if (s.progress >= 100) {
+    certDiv.innerHTML = `<div style="background:var(--dark);border:1px solid rgba(34,197,94,0.3);border-radius:10px;padding:2rem;text-align:center;">
+      <div style="font-size:3rem;margin-bottom:1rem;">&#9203;</div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:1.5rem;color:var(--green);letter-spacing:0.04em;margin-bottom:0.6rem;">Course Completed!</div>
+      <div style="color:var(--gray);font-size:0.85rem;line-height:1.7;margin-bottom:1.2rem;">Congratulations! Your certificate is being prepared and will be shared within 24–48 hours.</div>
+      <a href="https://wa.me/918459612191?text=Hi%20I%20completed%20the%20${encodeURIComponent(s.course)}%20course.%20Please%20share%20my%20certificate.%20ID%3A%20${s.id}" target="_blank" style="display:block;background:var(--green);color:var(--black);padding:0.85rem;font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:0.08em;border-radius:4px;text-decoration:none;">&#128242; Request Certificate on WhatsApp</a></div>`;
+  } else {
+    const needed = 100 - s.progress;
+    certDiv.innerHTML = `<div class="cert-locked">
+      <span class="cert-locked-icon">&#128274;</span>
+      <div style="font-size:1.3rem;color:var(--yellow);margin-bottom:0.5rem;font-weight:700;">Certificate Locked</div>
+      <div class="cert-locked-text">Complete all modules to unlock your certificate. You are ${s.progress}% through — just ${needed}% more to go!</div>
+      <div class="cert-progress-wrap" style="margin-top:1rem;">
+        <div style="display:flex;justify-content:space-between;margin-bottom:0.4rem;font-size:0.75rem;"><span style="color:var(--gray)">Progress</span><span style="color:var(--green)">${s.progress}%</span></div>
+        <div class="pbar-bg"><div class="pbar-fill" style="width:${s.progress}%"></div></div>
+      </div></div>`;
+  }
+}
+
+// ─── NAVIGATION ───────────────────────────────────────────────
+window.showPage = function(page) {
+  document.querySelectorAll(".dash-page").forEach(p => p.classList.remove("active"));
+  el("page-" + page).classList.add("active");
+  document.querySelectorAll(".nav-item").forEach(n => n.classList.remove("active"));
+  const titles = { overview:"Overview", courses:"Course Content", assignments:"Assignments", payment:"Payment Status", certificate:"Certificate", support:"Help and Support", profile:"My Profile" };
+  el("pageTitle").textContent = titles[page] || page;
+  if (window.innerWidth <= 768) el("sidebar").classList.remove("mob-open");
+};
+
+window.toggleSidebar = function() { el("sidebar").classList.toggle("mob-open"); };
+window.toggleFaq = function(elem) {
+  const ans = elem.nextElementSibling; ans.classList.toggle("open");
+  const spans = elem.querySelectorAll("span");
+  spans[spans.length - 1].textContent = ans.classList.contains("open") ? "−" : "+";
+};
+
+// ─── DOWNLOAD RECEIPT ─────────────────────────────────────────
+window.downloadInvoice = function() {
+  const s = currentStudent;
+  const w = window.open("", "_blank");
+  if (!w) { alert("Please allow popups to view the receipt."); return; }
+  const dateStr = new Date().toLocaleDateString("en-IN");
+  w.document.write(`<!DOCTYPE html><html><head><title>Receipt - ${s.name}</title>
+    <style>body{font-family:Arial,sans-serif;max-width:580px;margin:30px auto;color:#111;padding:20px;}
+    h1{text-align:center;font-size:22px;margin-bottom:5px;}.sub{text-align:center;color:#555;font-size:13px;letter-spacing:2px;text-transform:uppercase;margin-bottom:20px;}
+    .ok{background:#dcfce7;border:2px solid #22c55e;border-radius:8px;padding:12px;text-align:center;margin:15px 0;font-size:16px;font-weight:900;color:#15803d;}
+    .amt{text-align:center;font-size:38px;font-weight:900;color:#22c55e;margin:15px 0;}
+    .row{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid #eee;}.k{color:#555;font-size:13px;}.v{font-weight:700;font-size:13px;}
+    .ft{text-align:center;margin-top:25px;padding-top:15px;border-top:2px dashed #ddd;font-size:11px;color:#888;}
+    @media print{button{display:none;}}</style></head><body>
+    <h1>Thrive Skill Tech</h1><div class="sub">Payment Receipt</div>
+    <div class="ok">PAYMENT CONFIRMED</div>
+    <div class="amt">Rs. ${s.paid.toLocaleString("en-IN")}</div>
+    <div class="row"><span class="k">Receipt No.</span><span class="v">${s.id}-RCP</span></div>
+    <div class="row"><span class="k">Student Name</span><span class="v">${s.name}</span></div>
+    <div class="row"><span class="k">Phone</span><span class="v">+91 ${s.phone}</span></div>
+    <div class="row"><span class="k">Email</span><span class="v">${s.email}</span></div>
+    <div class="row"><span class="k">Course</span><span class="v">${s.courseFull}</span></div>
+    <div class="row"><span class="k">Duration</span><span class="v">${s.duration}</span></div>
+    <div class="row"><span class="k">Enrollment Date</span><span class="v">${s.enrollDate}</span></div>
+    <div class="row"><span class="k">Amount Paid</span><span class="v" style="color:#22c55e;">Rs. ${s.paid.toLocaleString("en-IN")}</span></div>
+    <div class="row"><span class="k">Payment Method</span><span class="v">${s.payMethod}</span></div>
+    <div class="row"><span class="k">Receipt Date</span><span class="v">${dateStr}</span></div>
+    <div class="ft"><p>Thrive Skill Tech — MSME Registered</p><p>Bhandara and Mumbai, Maharashtra</p><p>tst@thriveskilltech.com | +91 84596 12191</p></div>
+    <div style="text-align:center;margin-top:20px;">
+    <button onclick="window.print()" style="background:#22c55e;color:white;border:none;padding:11px 28px;font-size:15px;font-weight:700;border-radius:6px;cursor:pointer;margin-right:8px;">Print Receipt</button>
+    <button onclick="window.close()" style="background:#eee;color:#333;border:none;padding:11px 28px;font-size:15px;font-weight:700;border-radius:6px;cursor:pointer;">Close</button>
+    </div></body></html>`);
+  w.document.close();
+};
+
+// Keyboard enter on nav items
+document.querySelectorAll(".nav-item").forEach(item => {
+  item.addEventListener("keypress", e => { if (e.key === "Enter") item.click(); });
+});
+el("loginPass").addEventListener("keypress", e => { if (e.key === "Enter") window.doLogin(); });
+el("forgotEmail").addEventListener("keypress", e => { if (e.key === "Enter") window.doForgot(); });
+
+</script>
+</body>
+</html>
