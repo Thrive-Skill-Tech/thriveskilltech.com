@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title id="metaTitle">Article - Thrive Skill Tech</title>
+<meta name="description" id="metaDesc" content="Read free digital marketing and content creation tips from Thrive Skill Tech."/>
+<meta property="og:type" content="article"/>
+<meta property="og:site_name" content="Thrive Skill Tech"/>
+<meta property="og:title" id="ogTitle" content="Article - Thrive Skill Tech"/>
+<meta property="og:description" id="ogDesc" content=""/>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" media="print" onload="this.media=\'all\'"/>
+<style>
+:root{--black:#0a0a0a;--black2:#111;--dark:#1a1a1a;--green:#22c55e;--yellow:#facc15;--white:#f5f5f0;--gray:#c2c2c2;--gray2:#525252;--bdr:rgba(250,204,21,0.15);}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--black);color:var(--white);font-family:"Syne",system-ui,sans-serif;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,10,10,0.97);border-bottom:1px solid rgba(250,204,21,0.1);padding:0 5%;display:flex;align-items:center;justify-content:space-between;height:64px;backdrop-filter:blur(20px);}
+.nav-brand{font-family:"Bebas Neue",Impact,sans-serif;font-size:1.4rem;color:var(--yellow);letter-spacing:0.05em;text-decoration:none;}
+.nav-back{color:var(--gray);font-size:0.78rem;font-weight:600;text-decoration:none;display:flex;align-items:center;gap:6px;transition:color 0.2s;}
+.nav-back:hover{color:var(--yellow);}
+.nav-cta{background:var(--yellow);color:var(--black);padding:0.45rem 1rem;font-family:"Bebas Neue",Impact,sans-serif;font-size:0.9rem;letter-spacing:0.08em;border-radius:3px;text-decoration:none;}
+
+/* LOADER */
+#postLoader{min-height:80vh;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:1rem;padding-top:80px;}
+.sp{width:36px;height:36px;border:3px solid rgba(250,204,21,0.15);border-top-color:var(--yellow);border-radius:50%;animation:spin 0.8s linear infinite;}
+
+/* ARTICLE */
+.article-wrap{max-width:760px;margin:0 auto;padding:90px 5% 60px;}
+.article-category{display:inline-block;background:rgba(250,204,21,0.1);border:1px solid rgba(250,204,21,0.2);color:var(--yellow);font-size:0.62rem;font-weight:700;padding:0.22rem 0.65rem;border-radius:2px;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:1rem;}
+.article-title{font-family:"Bebas Neue",Impact,sans-serif;font-size:clamp(2rem,5vw,3.2rem);letter-spacing:0.03em;line-height:1.1;color:var(--white);margin-bottom:1rem;}
+.article-meta{display:flex;align-items:center;gap:1rem;flex-wrap:wrap;font-size:0.78rem;color:var(--gray2);margin-bottom:1.5rem;padding-bottom:1.5rem;border-bottom:1px solid rgba(255,255,255,0.07);}
+.article-meta span{display:flex;align-items:center;gap:5px;}
+.article-cover{width:100%;max-height:420px;object-fit:cover;border-radius:8px;margin-bottom:2rem;border:1px solid rgba(255,255,255,0.07);}
+.article-cover-emoji{width:100%;height:220px;background:linear-gradient(135deg,rgba(250,204,21,0.06),rgba(34,197,94,0.06));display:flex;align-items:center;justify-content:center;font-size:5rem;border-radius:8px;margin-bottom:2rem;border:1px solid rgba(255,255,255,0.07);}
+
+/* ARTICLE CONTENT STYLES */
+.article-content{font-size:1rem;line-height:1.85;color:var(--gray);}
+.article-content h1{font-family:"Bebas Neue",Impact,sans-serif;font-size:2rem;color:var(--yellow);letter-spacing:0.03em;margin:2rem 0 0.8rem;}
+.article-content h2{font-family:"Bebas Neue",Impact,sans-serif;font-size:1.6rem;color:var(--white);letter-spacing:0.03em;margin:1.8rem 0 0.7rem;padding-bottom:0.4rem;border-bottom:1px solid rgba(255,255,255,0.07);}
+.article-content h3{font-size:1.1rem;font-weight:700;color:var(--yellow);margin:1.5rem 0 0.5rem;}
+.article-content p{margin-bottom:1.2rem;color:var(--gray);}
+.article-content strong,.article-content b{color:var(--white);font-weight:700;}
+.article-content em,.article-content i{color:var(--green-l);font-style:italic;}
+.article-content ul,.article-content ol{padding-left:1.5rem;margin-bottom:1.2rem;}
+.article-content li{margin-bottom:0.5rem;color:var(--gray);}
+.article-content blockquote{border-left:3px solid var(--yellow);padding:0.8rem 1.2rem;margin:1.5rem 0;background:rgba(250,204,21,0.04);border-radius:0 6px 6px 0;font-style:italic;color:var(--gray);}
+.article-content hr{border:none;border-top:1px solid rgba(255,255,255,0.08);margin:2rem 0;}
+.article-content img{max-width:100%;border-radius:6px;margin:1rem 0;border:1px solid rgba(255,255,255,0.07);}
+.article-content a{color:var(--yellow);text-decoration:underline;}
+.article-content code{background:rgba(255,255,255,0.08);padding:0.15rem 0.4rem;border-radius:3px;font-family:"Space Mono","Courier New",monospace;font-size:0.85em;}
+.article-content pre{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:1rem;overflow-x:auto;margin:1.2rem 0;}
+
+/* SHARE & CTA */
+.article-share{margin-top:2.5rem;padding-top:1.5rem;border-top:1px solid rgba(255,255,255,0.07);}
+.share-label{font-size:0.75rem;color:var(--gray2);font-weight:700;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.8rem;}
+.share-btns{display:flex;gap:0.6rem;flex-wrap:wrap;}
+.share-btn{display:inline-flex;align-items:center;gap:6px;padding:0.5rem 1rem;border-radius:4px;font-size:0.78rem;font-weight:700;text-decoration:none;transition:all 0.2s;cursor:pointer;border:none;}
+.share-wa{background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.3);color:var(--green);}
+.share-wa:hover{background:rgba(34,197,94,0.2);}
+.share-copy{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:var(--gray);}
+.share-copy:hover{background:rgba(255,255,255,0.1);}
+
+.article-cta{background:linear-gradient(135deg,rgba(250,204,21,0.08),rgba(34,197,94,0.08));border:1px solid var(--bdr);border-radius:10px;padding:1.8rem;text-align:center;margin-top:2.5rem;position:relative;overflow:hidden;}
+.article-cta::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--yellow),var(--green));}
+.article-cta h3{font-family:"Bebas Neue",Impact,sans-serif;font-size:1.6rem;color:var(--yellow);letter-spacing:0.04em;margin-bottom:0.5rem;}
+.article-cta p{color:var(--gray);font-size:0.85rem;margin-bottom:1.2rem;line-height:1.6;}
+.article-cta a{display:inline-block;background:linear-gradient(135deg,var(--yellow),var(--green));color:var(--black);padding:0.75rem 1.8rem;font-family:"Bebas Neue",Impact,sans-serif;font-size:1rem;letter-spacing:0.1em;border-radius:4px;text-decoration:none;}
+
+.back-btn{display:inline-flex;align-items:center;gap:6px;color:var(--gray);font-size:0.8rem;font-weight:600;text-decoration:none;margin-bottom:1.5rem;transition:color 0.2s;}
+.back-btn:hover{color:var(--yellow);}
+
+footer{background:var(--black2);padding:1.5rem 5%;text-align:center;border-top:1px solid rgba(255,255,255,0.06);}
+footer p{color:var(--gray2);font-size:0.75rem;}
+footer a{color:var(--yellow);text-decoration:none;}
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-brand">Thrive Skill Tech</a>
+  <a href="blog.html" class="nav-back">&#8592; All Articles</a>
+  <a href="index.html#enroll" class="nav-cta">Enroll Now</a>
+</nav>
+
+<!-- LOADER shown while fetching -->
+<div id="postLoader">
+  <div class="sp"></div>
+  <p style="color:var(--gray);font-size:0.85rem;">Loading article...</p>
+</div>
+
+<!-- ARTICLE (populated by JS) -->
+<div class="article-wrap" id="articleWrap" style="display:none;">
+  <a href="blog.html" class="back-btn">&#8592; Back to Blog</a>
+  <span class="article-category" id="aCategory"></span>
+  <h1 class="article-title" id="aTitle"></h1>
+  <div class="article-meta">
+    <span>&#9997;&#65039; <span id="aAuthor"></span></span>
+    <span>&#128197; <span id="aDate"></span></span>
+    <span>&#9201; <span id="aReadTime"></span></span>
+  </div>
+  <div id="aCoverWrap"></div>
+  <div class="article-content" id="aContent"></div>
+
+  <!-- SHARE -->
+  <div class="article-share">
+    <div class="share-label">Share this article</div>
+    <div class="share-btns">
+      <a class="share-btn share-wa" id="shareWa" target="_blank" rel="noopener">&#128172; Share on WhatsApp</a>
+      <button class="share-btn share-copy" onclick="copyLink()">&#128279; Copy Link</button>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="article-cta">
+    <h3>Want to Learn This in Depth?</h3>
+    <p>Join Thrive Skill Tech and get structured training in Content Creation and Digital Marketing — with mentorship, assignments and a certificate.</p>
+    <a href="index.html#enroll">&#128640; Enroll Now — Starting &#8377;1,999</a>
+  </div>
+</div>
+
+<!-- NOT FOUND -->
+<div id="notFound" style="display:none;text-align:center;padding:120px 2rem 4rem;color:var(--gray);">
+  <div style="font-size:3rem;margin-bottom:1rem;">&#128196;</div>
+  <div style="font-family:Bebas Neue,sans-serif;font-size:2rem;color:var(--yellow);letter-spacing:0.04em;margin-bottom:0.5rem;">Article Not Found</div>
+  <p style="margin-bottom:1.5rem;">This article may have been removed or the link is incorrect.</p>
+  <a href="blog.html" style="color:var(--yellow);font-weight:700;">&#8592; Back to Blog</a>
+</div>
+
+<footer>
+  <p>&#169; 2026 <a href="index.html">Thrive Skill Tech</a> &middot;
+  <a href="legal.html">Terms &amp; Privacy</a></p>
+</footer>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-app.js";
+import { getFirestore, doc, getDoc, updateDoc, increment }
+  from "https://www.gstatic.com/firebasejs/11.7.1/firebase-firestore.js";
+
+const cfg = {
+  apiKey:"AIzaSyAJAGCe6wIhP9T2rQ6gqTMD_re0OGnTaVY",
+  authDomain:"thrive-skill-tech.firebaseapp.com",
+  projectId:"thrive-skill-tech",
+  storageBucket:"thrive-skill-tech.firebasestorage.app",
+  messagingSenderId:"969286367743",
+  appId:"1:969286367743:web:2e31930f37af2e9b6e4f3c"
+};
+const app = initializeApp(cfg);
+const db = getFirestore(app);
+
+function el(id) { return document.getElementById(id); }
+function setText(id, v) { var e = el(id); if (e) e.textContent = v || ""; }
+
+// Get post ID from URL
+const params = new URLSearchParams(window.location.search);
+const postId = params.get("id");
+
+async function loadPost() {
+  if (!postId) { showNotFound(); return; }
+  try {
+    const snap = await getDoc(doc(db, "blog_posts", postId));
+    if (!snap.exists() || snap.data().status !== "published") { showNotFound(); return; }
+    const p = snap.data();
+
+    // Update meta tags
+    document.title = p.title + " - Thrive Skill Tech";
+    el("metaDesc").content = p.metaDesc || p.excerpt || "";
+    el("ogTitle").content = p.title;
+    el("ogDesc").content = p.excerpt || "";
+
+    // Populate article
+    setText("aCategory", p.category || "Article");
+    setText("aTitle", p.title);
+    setText("aAuthor", p.author || "Thrive Skill Tech");
+    setText("aDate", p.publishedAt || "");
+    setText("aReadTime", p.readTime || "5 min read");
+
+    // Cover image or emoji
+    const coverWrap = el("aCoverWrap");
+    if (p.coverImg) {
+      coverWrap.innerHTML = '<img class="article-cover" src="' + p.coverImg + '" alt="' + p.title + '" loading="lazy"/>';
+    } else if (p.emoji) {
+      coverWrap.innerHTML = '<div class="article-cover-emoji">' + p.emoji + '</div>';
+    }
+
+    // Article content (rich HTML from editor)
+    el("aContent").innerHTML = p.content || "";
+
+    // Share links
+    const shareUrl = encodeURIComponent(window.location.href);
+    const shareText = encodeURIComponent("Check out this article: " + p.title + " by Thrive Skill Tech");
+    el("shareWa").href = "https://wa.me/?text=" + shareText + "%20" + shareUrl;
+
+    // Show article, hide loader
+    el("postLoader").style.display = "none";
+    el("articleWrap").style.display = "block";
+
+    // Increment view count silently
+    try { await updateDoc(doc(db, "blog_posts", postId), { views: increment(1) }); } catch(e) {}
+
+  } catch(e) {
+    console.error("loadPost:", e);
+    showNotFound();
+  }
+}
+
+function showNotFound() {
+  el("postLoader").style.display = "none";
+  el("notFound").style.display = "block";
+}
+
+window.copyLink = function() {
+  navigator.clipboard.writeText(window.location.href).then(function() {
+    alert("Link copied to clipboard!");
+  }).catch(function() {
+    prompt("Copy this link:", window.location.href);
+  });
+};
+
+loadPost();
+</script>
+</body>
+</html>

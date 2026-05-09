@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Blog - Thrive Skill Tech | Digital Marketing & Content Creation Tips</title>
+<meta name="description" content="Free tips and guides on content creation, digital marketing, Instagram growth, YouTube SEO and more from Thrive Skill Tech."/>
+<meta name="robots" content="index, follow"/>
+<link rel="canonical" href="https://thriveskilltech.com/blog.html"/>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" media="print" onload="this.media=\'all\'"/>
+<style>
+:root{--black:#0a0a0a;--black2:#111;--dark:#1a1a1a;--green:#22c55e;--yellow:#facc15;--white:#f5f5f0;--gray:#c2c2c2;--gray2:#525252;--bdr:rgba(250,204,21,0.15);}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--black);color:var(--white);font-family:"Syne",system-ui,sans-serif;}
+@keyframes spin{to{transform:rotate(360deg);}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,10,10,0.97);border-bottom:1px solid rgba(250,204,21,0.1);padding:0 5%;display:flex;align-items:center;justify-content:space-between;height:64px;backdrop-filter:blur(20px);}
+.nav-brand{font-family:"Bebas Neue",Impact,sans-serif;font-size:1.4rem;color:var(--yellow);letter-spacing:0.05em;text-decoration:none;}
+.nav-links-blog{display:flex;align-items:center;gap:1.5rem;list-style:none;}
+.nav-links-blog a{color:var(--gray);font-size:0.78rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;text-decoration:none;transition:color 0.2s;}
+.nav-links-blog a:hover{color:var(--yellow);}
+.nav-cta{background:var(--yellow);color:var(--black);padding:0.5rem 1.2rem;font-family:"Bebas Neue",Impact,sans-serif;font-size:0.95rem;letter-spacing:0.08em;border-radius:3px;text-decoration:none;}
+.blog-hero{padding:110px 5% 50px;border-bottom:1px solid rgba(255,255,255,0.06);}
+.blog-hero-tag{font-size:0.65rem;color:var(--green);font-weight:700;letter-spacing:0.18em;text-transform:uppercase;margin-bottom:0.8rem;display:flex;align-items:center;gap:8px;}
+.blog-hero-tag::before{content:"";width:24px;height:2px;background:var(--yellow);}
+.blog-hero h1{font-family:"Bebas Neue",Impact,sans-serif;font-size:clamp(2.5rem,6vw,4.5rem);letter-spacing:0.03em;line-height:1;margin-bottom:0.8rem;}
+.blog-hero h1 .y{color:var(--yellow);}
+.blog-hero h1 .g{color:var(--green);}
+.blog-hero p{color:var(--gray);font-size:0.95rem;max-width:600px;line-height:1.7;}
+.blog-filters{padding:1.2rem 5%;display:flex;gap:0.5rem;flex-wrap:wrap;border-bottom:1px solid rgba(255,255,255,0.06);overflow-x:auto;}
+.filter-btn{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:var(--gray);padding:0.4rem 1rem;font-size:0.75rem;font-weight:700;border-radius:3px;cursor:pointer;transition:all 0.2s;text-transform:uppercase;letter-spacing:0.08em;white-space:nowrap;font-family:"Syne",system-ui,sans-serif;}
+.filter-btn:hover,.filter-btn.active{background:rgba(250,204,21,0.1);border-color:rgba(250,204,21,0.3);color:var(--yellow);}
+.blog-main{padding:3rem 5%;max-width:1300px;margin:0 auto;}
+.blog-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.5rem;}
+.blog-card{background:var(--dark);border:1px solid rgba(255,255,255,0.07);border-radius:10px;overflow:hidden;transition:all 0.25s;display:flex;flex-direction:column;cursor:pointer;text-decoration:none;color:inherit;}
+.blog-card:hover{border-color:rgba(250,204,21,0.25);transform:translateY(-4px);box-shadow:0 12px 40px rgba(0,0,0,0.3);}
+.blog-card-img{height:160px;background:linear-gradient(135deg,rgba(250,204,21,0.06),rgba(34,197,94,0.06));display:flex;align-items:center;justify-content:center;font-size:3.5rem;border-bottom:1px solid rgba(255,255,255,0.06);}
+.blog-card-img img{width:100%;height:100%;object-fit:cover;}
+.blog-card-body{padding:1.2rem;flex:1;display:flex;flex-direction:column;}
+.blog-tag{display:inline-block;background:rgba(250,204,21,0.1);border:1px solid rgba(250,204,21,0.2);color:var(--yellow);font-size:0.6rem;font-weight:700;padding:0.2rem 0.6rem;border-radius:2px;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.7rem;}
+.blog-title{font-weight:800;font-size:0.95rem;line-height:1.4;color:var(--white);margin-bottom:0.5rem;flex:1;}
+.blog-meta{font-size:0.7rem;color:var(--gray2);margin-bottom:0.7rem;}
+.blog-excerpt{font-size:0.8rem;color:var(--gray);line-height:1.6;margin-bottom:0.9rem;}
+.blog-read{color:var(--yellow);font-size:0.75rem;font-weight:700;display:inline-flex;align-items:center;gap:5px;transition:gap 0.2s;}
+.blog-card:hover .blog-read{gap:10px;}
+.loading-state{text-align:center;padding:4rem 2rem;color:var(--gray);}
+.spinner-blog{width:36px;height:36px;border:3px solid rgba(250,204,21,0.15);border-top-color:var(--yellow);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 1rem;}
+.empty-state{text-align:center;padding:5rem 2rem;color:var(--gray);}
+.empty-icon{font-size:3.5rem;display:block;margin-bottom:1rem;}
+.empty-title{font-family:"Bebas Neue",Impact,sans-serif;font-size:2rem;color:var(--yellow);letter-spacing:0.04em;margin-bottom:0.5rem;}
+.empty-sub{font-size:0.85rem;line-height:1.7;max-width:500px;margin:0 auto 1.5rem;}
+.newsletter{background:linear-gradient(135deg,rgba(250,204,21,0.06),rgba(34,197,94,0.06));border-top:1px solid rgba(255,255,255,0.06);padding:4rem 5%;text-align:center;}
+.newsletter h2{font-family:"Bebas Neue",Impact,sans-serif;font-size:2rem;letter-spacing:0.04em;margin-bottom:0.4rem;}
+.newsletter p{color:var(--gray);font-size:0.85rem;margin-bottom:1.5rem;}
+.nl-form{display:flex;gap:0.6rem;max-width:440px;margin:0 auto;flex-wrap:wrap;justify-content:center;}
+.nl-form input{flex:1;min-width:200px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:4px;color:var(--white);padding:0.75rem 1rem;font-family:"Syne",system-ui,sans-serif;font-size:0.85rem;outline:none;}
+.nl-form input:focus{border-color:var(--yellow);}
+.nl-form button{background:var(--yellow);color:var(--black);border:none;padding:0.75rem 1.4rem;font-family:"Bebas Neue",Impact,sans-serif;font-size:1rem;letter-spacing:0.08em;border-radius:4px;cursor:pointer;}
+footer{background:var(--black2);padding:1.5rem 5%;text-align:center;border-top:1px solid rgba(255,255,255,0.06);}
+footer p{color:var(--gray2);font-size:0.75rem;}
+footer a{color:var(--yellow);text-decoration:none;}
+@media(max-width:600px){.blog-grid{grid-template-columns:1fr;}.nav-links-blog{display:none;}}
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-brand">Thrive Skill Tech</a>
+  <ul class="nav-links-blog">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="index.html#enroll">Enroll</a></li>
+    <li><a href="index.html#pricing">Pricing</a></li>
+    <li><a href="index.html#faq">FAQ</a></li>
+    <li><a href="dashboard.html">Student Login</a></li>
+  </ul>
+  <a href="index.html#enroll" class="nav-cta">Enroll Now</a>
+</nav>
+
+<div class="blog-hero">
+  <div class="blog-hero-tag">Knowledge Hub</div>
+  <h1>Free Tips &amp; <span class="y">Strategies</span> for <span class="g">Creators</span></h1>
+  <p>Learn content creation, digital marketing, Instagram growth, YouTube SEO and more — completely free from Thrive Skill Tech.</p>
+</div>
+
+<div class="blog-filters" id="filterBar">
+  <button class="filter-btn active" onclick="filterPosts(this,\'all\')">All</button>
+  <button class="filter-btn" onclick="filterPosts(this,\'Content Creation\')">Content Creation</button>
+  <button class="filter-btn" onclick="filterPosts(this,\'Instagram\')">Instagram</button>
+  <button class="filter-btn" onclick="filterPosts(this,\'YouTube\')">YouTube</button>
+  <button class="filter-btn" onclick="filterPosts(this,\'Digital Marketing\')">Digital Marketing</button>
+  <button class="filter-btn" onclick="filterPosts(this,\'SEO\')">SEO</button>
+  <button class="filter-btn" onclick="filterPosts(this,\'AI Tools\')">AI Tools</button>
+  <button class="filter-btn" onclick="filterPosts(this,\'Career Tips\')">Career Tips</button>
+</div>
+
+<div class="blog-main">
+  <div id="blogGrid" class="blog-grid">
+    <div class="loading-state" style="grid-column:1/-1;">
+      <div class="spinner-blog"></div>
+      <p>Loading articles...</p>
+    </div>
+  </div>
+</div>
+
+<div class="newsletter">
+  <h2>Get Free <span style="color:var(--yellow)">Tips</span> in Your Inbox</h2>
+  <p>Join students getting weekly content creation and digital marketing tips — completely free.</p>
+  <div class="nl-form">
+    <input type="email" placeholder="your@email.com" id="nlEmail"/>
+    <button onclick="subscribeNewsletter()">Subscribe Free</button>
+  </div>
+  <div id="nlMsg" style="display:none;margin-top:0.8rem;font-size:0.82rem;font-weight:700;"></div>
+</div>
+
+<footer>
+  <p>&#169; 2026 <a href="index.html">Thrive Skill Tech</a> &middot; MSME Registered (UDYAM-MH-06-0065988) &middot;
+  <a href="legal.html">Terms &amp; Privacy</a></p>
+</footer>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-app.js";
+import { getFirestore, collection, getDocs, query, where, orderBy, addDoc, serverTimestamp }
+  from "https://www.gstatic.com/firebasejs/11.7.1/firebase-firestore.js";
+
+const cfg = {
+  apiKey:"AIzaSyAJAGCe6wIhP9T2rQ6gqTMD_re0OGnTaVY",
+  authDomain:"thrive-skill-tech.firebaseapp.com",
+  projectId:"thrive-skill-tech",
+  storageBucket:"thrive-skill-tech.firebasestorage.app",
+  messagingSenderId:"969286367743",
+  appId:"1:969286367743:web:2e31930f37af2e9b6e4f3c"
+};
+const app = initializeApp(cfg);
+const db = getFirestore(app);
+
+let allPosts = [];
+let currentFilter = "all";
+
+// ── LOAD ALL PUBLISHED POSTS ──────────────────────────────────
+async function loadPosts() {
+  const grid = document.getElementById("blogGrid");
+  try {
+    const snap = await getDocs(query(collection(db, "blog_posts"), where("status", "==", "published")));
+    allPosts = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    allPosts.sort((a, b) => ((b.createdAt && b.createdAt.seconds) || 0) - ((a.createdAt && a.createdAt.seconds) || 0));
+    renderPosts(allPosts);
+  } catch(e) {
+    grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1;"><span class="empty-icon">&#128196;</span><div class="empty-title">Could Not Load Articles</div><div class="empty-sub">Please refresh the page or check your connection.</div></div>';
+    console.error("loadPosts:", e);
+  }
+}
+
+function renderPosts(posts) {
+  const grid = document.getElementById("blogGrid");
+  if (posts.length === 0) {
+    grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1;"><span class="empty-icon">&#9997;&#65039;</span><div class="empty-title">Blog Coming Soon</div><div class="empty-sub">We are working on free guides and tips. Subscribe below to get notified when we publish our first article.</div><a href="index.html#enroll" style="display:inline-block;background:var(--yellow);color:var(--black);padding:0.7rem 1.5rem;font-family:Bebas Neue,sans-serif;font-size:1rem;letter-spacing:0.08em;border-radius:3px;text-decoration:none;">Enroll in Our Course</a></div>';
+    return;
+  }
+  grid.innerHTML = "";
+  posts.forEach(post => {
+    const card = document.createElement("a");
+    card.className = "blog-card";
+    card.href = "blog-post.html?id=" + post.id;
+    card.setAttribute("aria-label", "Read article: " + post.title);
+
+    const imgDiv = document.createElement("div");
+    imgDiv.className = "blog-card-img";
+    if (post.coverImg) {
+      imgDiv.innerHTML = '<img src="' + post.coverImg + '" alt="' + post.title + '" loading="lazy"/>';
+    } else {
+      imgDiv.textContent = post.emoji || "\ud83d\udcdd";
+    }
+
+    const body = document.createElement("div");
+    body.className = "blog-card-body";
+    body.innerHTML =
+      '<span class="blog-tag">' + (post.category || "Article") + '</span>' +
+      '<div class="blog-title">' + post.title + '</div>' +
+      '<div class="blog-meta">By ' + (post.author || "Thrive Skill Tech") + '  &middot;  ' + (post.publishedAt || "") + '  &middot;  ' + (post.readTime || "5 min read") + '</div>' +
+      '<div class="blog-excerpt">' + (post.excerpt || "").substring(0, 130) + '...</div>' +
+      '<span class="blog-read">Read Article &#8594;</span>';
+
+    card.appendChild(imgDiv);
+    card.appendChild(body);
+    grid.appendChild(card);
+  });
+}
+
+// ── FILTER ────────────────────────────────────────────────────
+window.filterPosts = function(btn, category) {
+  document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+  currentFilter = category;
+  if (category === "all") {
+    renderPosts(allPosts);
+  } else {
+    renderPosts(allPosts.filter(p => p.category === category));
+  }
+};
+
+// ── NEWSLETTER ────────────────────────────────────────────────
+window.subscribeNewsletter = async function() {
+  const email = document.getElementById("nlEmail").value.trim();
+  const msg = document.getElementById("nlMsg");
+  if (!email || !/\S+@\S+\.\S+/.test(email)) {
+    msg.style.color = "#f87171";
+    msg.textContent = "Please enter a valid email address.";
+    msg.style.display = "block";
+    return;
+  }
+  try {
+    await addDoc(collection(db, "leads"), { email, source: "blog_newsletter", createdAt: serverTimestamp() });
+  } catch(e) { console.error(e); }
+  msg.style.color = "var(--green)";
+  msg.textContent = "\u2713 Subscribed! We will notify you when we publish new articles.";
+  msg.style.display = "block";
+  document.getElementById("nlEmail").value = "";
+};
+
+loadPosts();
+</script>
+</body>
+</html>
